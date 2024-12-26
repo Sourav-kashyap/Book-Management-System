@@ -101,7 +101,7 @@ Copy the repository URL. It typically looks like this:
 
 ## Run the git clone command followed by the URL:
 
-- git clone https://github.com/username/repository-name.git
+- git clone https://github.com/Sourav-kashyap/Book-Management-System.git
 - After the cloning process is complete, navigate into the cloned repository directory:
 - cd Book-Management-System
 - Verify the Cloning
