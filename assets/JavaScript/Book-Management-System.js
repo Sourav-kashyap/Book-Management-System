@@ -74,3 +74,56 @@ const displayBook = () => {
         tableBody.appendChild(row); 
     }); 
 };
+
+const updateBook = (isbn, updatedData) => {
+    const bookIndex = books.findIndex(book => book.isbn === isbn);    
+
+    if(bookIndex !== -1) {
+        books[bookIndex] = { ...books[bookIndex], ...updatedData };
+        displayBook();  
+        const form = document.getElementById("bookForm");
+        form.reset();
+    }else{
+        console.log(`Book with ISBN ${isbn} not found`);
+    }
+
+    deleteBook(isbn);
+};
+
+const editBook = (isbn) => {
+    const book = books.find(book => book.isbn === isbn);
+
+    if(book) {
+        document.getElementById('bookTitle').value = book.title;
+        document.getElementById('bookAuthor').value = book.author;
+        document.getElementById('bookIsbn').value = book.isbn;
+        document.getElementById('bookType').value = book.genre;
+        document.getElementById('bookPubDate').value = book.year;
+
+        const form = document.getElementById('bookForm');
+        form.onsubmit = (event) => {
+            event.preventDefault();
+            const updatedData = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                isbn: document.getElementById('bookIsbn').value,
+                type: document.getElementById('bookPubDate').value,
+                genre: document.getElementById('bookType').value
+            };
+            updateBook(isbn, updatedData);  
+        };
+    }else{
+        console.log(`Book with ISBN ${isbn} not found`);
+    }
+};
+
+const deleteBook = (isbn) =>{
+    // find method scans the array from start to end and stops as soon as it finds the first match.
+    const removeBookIndex = books.findIndex(book => book.isbn === isbn);
+    if(removeBookIndex !== -1){
+        books.splice(removeBookIndex , 1);
+        displayBook();
+    }else{
+        console.log(`Book with ISBN ${isbn} not found`);
+    }
+};
