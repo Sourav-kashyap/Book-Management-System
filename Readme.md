@@ -5,9 +5,9 @@ A Book Management System is a project aimed at creating a software solution that
 
 # Phases of the Book Management System Project: 
 
-1. Requirements Phase :
+# 1. Requirements Phase :
 
-Objective: Clearly understand the scope and functionalities of the system.
+### Objective: Clearly understand the scope and functionalities of the system.
 
 ## Activities:
 
@@ -25,9 +25,9 @@ Define validation rules:
 - ISBN must be numeric.
 - Publication Date must be valid.
 
-2. Design Phase :
+# 2. Design Phase :
 
-Objective: Plan the system's structure and layout.
+### Objective: Plan the system's structure and layout.
 
 ## Activities:
 
@@ -39,9 +39,9 @@ Develop the following diagrams:
 - Client-Server Model: Represents the interaction between the client and data storage.
 - 3-Tier Architecture: Demonstrates separation of Presentation, Application, and Data layers.
 
-3. Implementation Phase :
+# 3. Implementation Phase :
 
-Objective: Develop the system using the planned design.
+### Objective: Develop the system using the planned design.
 
 ## Activities:
 - Build static pages using HTML and CSS
@@ -52,26 +52,26 @@ Objective: Develop the system using the planned design.
 - Enable editing and deleting books.
 - Use modular JavaScript (ES6) for maintainability.
 
-4. Testing Phase :
+# 4. Testing Phase :
 
-Objective: Validate the system against the requirements.
+### Objective: Validate the system against the requirements.
 
 ## Activities:
 - Perform unit testing for JavaScript functions (e.g., validation, data manipulation).
 - Test UI responsiveness and interactivity.
 - Validate data persistence in Local Storage.
 
-5. Deployment Phase :
+# 5. Deployment Phase :
 
-Objective: Host the system for public access.
+### Objective: Host the system for public access.
 
 ## Activities:
 - Use GitHub Pages or similar platforms for deployment.
 - Ensure all links and assets work correctly in the hosted environment.
 
-6. Maintenance Phase :
+# 6. Maintenance Phase :
 
-Objective: Keep the system updated and functional post-deployment.
+### Objective: Keep the system updated and functional post-deployment.
 
 ## Activities:
 - Fix bugs reported by users.
