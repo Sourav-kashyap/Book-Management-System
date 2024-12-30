@@ -14,9 +14,10 @@ document.addEventListener("DOMContentLoaded" , () => {
         const isbn = document.getElementById("bookIsbn").value;
         const genre = document.getElementById("bookType").value;
         const year = document.getElementById("bookPubDate").value;
+        const age = findBookAge(year);
         /* new Date(document.getElementById("bookPubDate").value).getFullYear(); */
 
-        addBook({title , author , isbn , genre , year});
+        addBook({title , author , isbn , genre , year , age});
         
         /* 
             reset function is a built-in JS method on HTML form elements. it clear all user
@@ -66,6 +67,7 @@ const displayBook = () => {
             <td>${book.isbn}</td> 
             <td>${book.year}</td> 
             <td>${book.genre}</td> 
+            <td>${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
             <td>
                 <button id="deleteBtn" onclick="deleteBook('${book.isbn}')">Delete</button>
                 <button id="editBtn" onclick="editBook('${book.isbn}')">Edit</button>
@@ -77,7 +79,6 @@ const displayBook = () => {
 
 const updateBook = (isbn, updatedData) => {
     const bookIndex = books.findIndex(book => book.isbn === isbn);    
-
     if(bookIndex !== -1) {
         books[bookIndex] = { ...books[bookIndex], ...updatedData };
         displayBook();  
@@ -86,8 +87,6 @@ const updateBook = (isbn, updatedData) => {
     }else{
         console.log(`Book with ISBN ${isbn} not found`);
     }
-
-    deleteBook(isbn);
 };
 
 const editBook = (isbn) => {
@@ -99,26 +98,29 @@ const editBook = (isbn) => {
         document.getElementById('bookIsbn').value = book.isbn;
         document.getElementById('bookType').value = book.genre;
         document.getElementById('bookPubDate').value = book.year;
-
-        const form = document.getElementById('bookForm');
-        form.onsubmit = (event) => {
-            event.preventDefault();
-            const updatedData = {
-                title: document.getElementById('bookTitle').value,
-                author: document.getElementById('bookAuthor').value,
-                isbn: document.getElementById('bookIsbn').value,
-                type: document.getElementById('bookPubDate').value,
-                genre: document.getElementById('bookType').value
+       
+        document.addEventListener("DOMContentLoaded" , () => {
+            const form = document.getElementById('bookForm');
+            form.onsubmit = (event) => {
+                event.preventDefault();
+                const updatedData = {
+                    title: document.getElementById('bookTitle').value,
+                    author: document.getElementById('bookAuthor').value,
+                    isbn: document.getElementById('bookIsbn').value,
+                    year: document.getElementById('bookPubDate').value,
+                    genre: document.getElementById('bookType').value
+                };
+                updateBook(isbn, updatedData);  
             };
-            updateBook(isbn, updatedData);  
-        };
+        });
+        deleteBook(isbn);
     }else{
         console.log(`Book with ISBN ${isbn} not found`);
     }
 };
 
 const deleteBook = (isbn) =>{
-    // find method scans the array from start to end and stops as soon as it finds the first match.
+    // findIndex method returns the index of the first element that satisfies the condition.
     const removeBookIndex = books.findIndex(book => book.isbn === isbn);
     if(removeBookIndex !== -1){
         books.splice(removeBookIndex , 1);
@@ -126,4 +128,34 @@ const deleteBook = (isbn) =>{
     }else{
         console.log(`Book with ISBN ${isbn} not found`);
     }
+};
+
+const findBookAge = (year) => {
+    const currDate = new Date();
+    const bookDate = new Date(year);
+
+    let diffYear = currDate.getFullYear() - bookDate.getFullYear();
+    let diffMonth = currDate.getMonth() - bookDate.getMonth();
+    let diffDay = currDate.getDate() - bookDate.getDate();
+
+    if (diffDay < 0) {
+        diffMonth -= 1; // Borrow a month
+        diffDay += new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate(); // Add days from the previous month
+    }
+
+    if (diffMonth < 0) {
+        diffYear -= 1; // Borrow a year
+        diffMonth += 12; 
+    }
+
+    if (diffMonth >= 12) {
+        diffYear += Math.floor(diffMonth / 12);
+        diffMonth %= 12;
+    }
+
+    return {
+        y: diffYear,
+        m: diffMonth,
+        d: diffDay,
+    };
 };
