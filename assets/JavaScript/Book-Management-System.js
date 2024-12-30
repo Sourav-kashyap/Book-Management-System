@@ -81,7 +81,7 @@ const updateBook = (isbn, updatedData) => {
     const bookIndex = books.findIndex(book => book.isbn === isbn);    
     if(bookIndex !== -1) {
         books[bookIndex] = { ...books[bookIndex], ...updatedData };
-        displayBook();  
+        displayBook(books);  
         const form = document.getElementById("bookForm");
         form.reset();
     }else{
@@ -124,7 +124,7 @@ const deleteBook = (isbn) =>{
     const removeBookIndex = books.findIndex(book => book.isbn === isbn);
     if(removeBookIndex !== -1){
         books.splice(removeBookIndex , 1);
-        displayBook();
+        displayBook(books);
     }else{
         console.log(`Book with ISBN ${isbn} not found`);
     }
