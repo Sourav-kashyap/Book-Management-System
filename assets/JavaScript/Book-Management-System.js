@@ -51,10 +51,10 @@ let books = [];
 
 const addBook = (book) =>{
     books.push(book);
-    displayBook();
+    displayBook(books);
 }
 
-const displayBook = () => { 
+const displayBook = (books) => { 
     const tableBody = document.querySelector("#bookTable tbody"); 
     tableBody.innerHTML = ""; 
 
@@ -159,3 +159,14 @@ const findBookAge = (year) => {
         d: diffDay,
     };
 };
+
+const inputGenre = document.getElementById("searchGenre");
+inputGenre.addEventListener("input" , () =>{
+    const inputValue = inputGenre.value.toLowerCase();
+    if(inputValue == ""){
+        displayBook(books);
+    }else{
+        const resultBooks = books.filter((book) => book.genre === inputValue);
+        displayBook(resultBooks);
+    }
+})

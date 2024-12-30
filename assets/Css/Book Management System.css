@@ -91,3 +91,10 @@ th {
     background-color: #55A630;
     color: black;
 }
+
+/* ------------------------------------------------------------------- */
+
+#searchGenre{
+    margin-bottom: -8px;
+    border: none;
+}
