@@ -1,9 +1,8 @@
-# Book Management System Project: 
+# Book Management System Project:
 
 A Book Management System is a project aimed at creating a software solution that facilitates the managment of books. The system will include key functionalities for adding books, viewiing details, and organizing book related data efficiently.
 
-
-# Phases of the Book Management System Project: 
+# Phases of the Book Management System Project:
 
 # 1. Requirements Phase :
 
@@ -12,15 +11,18 @@ A Book Management System is a project aimed at creating a software solution that
 ## Activities:
 
 Identify core features:
+
 - Add a book (Title, Author, ISBN, Publication Date, Genre).
 - Edit or delete books.
 - Display books in a table format.
 
 Non-functional requirements:
+
 - Simple, responsive UI using CSS.
 - Data persistence in Local Storage or JSON files.
 
 Define validation rules:
+
 - Ensure all fields are filled.
 - ISBN must be numeric.
 - Publication Date must be valid.
@@ -32,10 +34,12 @@ Define validation rules:
 ## Activities:
 
 Create UI wireframes for:
+
 - Add book form.
 - Books list table.
 
 Develop the following diagrams:
+
 - Client-Server Model: Represents the interaction between the client and data storage.
 - 3-Tier Architecture: Demonstrates separation of Presentation, Application, and Data layers.
 
@@ -44,6 +48,7 @@ Develop the following diagrams:
 ### Objective: Develop the system using the planned design.
 
 ## Activities:
+
 - Build static pages using HTML and CSS
 - Add interactivity using JavaScript:
 - Validate inputs.
@@ -57,6 +62,7 @@ Develop the following diagrams:
 ### Objective: Validate the system against the requirements.
 
 ## Activities:
+
 - Perform unit testing for JavaScript functions (e.g., validation, data manipulation).
 - Test UI responsiveness and interactivity.
 - Validate data persistence in Local Storage.
@@ -66,6 +72,7 @@ Develop the following diagrams:
 ### Objective: Host the system for public access.
 
 ## Activities:
+
 - Use GitHub Pages or similar platforms for deployment.
 - Ensure all links and assets work correctly in the hosted environment.
 
@@ -74,11 +81,12 @@ Develop the following diagrams:
 ### Objective: Keep the system updated and functional post-deployment.
 
 ## Activities:
+
 - Fix bugs reported by users.
 - Add new features based on feedback (e.g., search or filter books).
 - Enhance UI/UX as needed.
 
-**************************************************************************************
+---
 
 # How to Clone a Repository to Your Local Computer
 
@@ -97,6 +105,7 @@ Follow these steps to clone this repository to your local system:
    - cd /path/to/your/directory
 
 Copy the repository URL. It typically looks like this:
+
 - https://github.com/Sourav-kashyap/Book-Management-System
 
 ## Run the git clone command followed by the URL:
@@ -112,7 +121,7 @@ Copy the repository URL. It typically looks like this:
 
 ## Troubleshooting
 
-- Error: "Permission denied (publickey)": Make sure your SSH key is added to your GitHub account if     you're using SSH instead of HTTPS.
+- Error: "Permission denied (publickey)": Make sure your SSH key is added to your GitHub account if you're using SSH instead of HTTPS.
 - Error: "Repository not found": Double-check the repository URL for accuracy.
 
 # Congratulations! You've successfully cloned the repository.

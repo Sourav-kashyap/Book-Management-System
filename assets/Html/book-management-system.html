@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Management System</title>
+    <!-- include the link of external css here -->
+    <link rel="stylesheet" href="../Css/Book Management System.css" />
+  </head>
+  <body>
+    <div class="mainContainer">
+      <h1>Book Management System</h1>
+
+      <!-- the action="" attribute defines the end point URL that will handle the form data on the server -->
+      <!-- method="" defines how the data is sent to the server POST sends the form data in the http request body. 
+            data is not appended to the url making it more secure for sensitive information. it can send larger 
+            amounts of data compared to get. -->
+
+      <form id="bookForm">
+        <!-- <lable> </lable> tag is used to associate a description with the input field and for="" attribute links the lable to the input field with the id="" clicking the lable focuses the correspondiog input field -->
+
+        <!-- <input> tag creates a field where users can input text. name="" is used to identify the from data when it's sublitted to the server and required means makes the field mandatory -->
+
+        <label for="bookTitle">Title</label>
+        <input
+          type="text"
+          placeholder="Enter the book title"
+          name="bookTitle"
+          id="bookTitle"
+          required />
+
+        <!-- <br> tag are used to insert a line break after the input field for proper spacing -->
+
+        <br />
+        <br />
+
+        <label for="bookAuthor">Author</label>
+        <input
+          type="text"
+          placeholder="Enter the book Author's name"
+          name="bookAuthor"
+          id="bookAuthor"
+          required />
+
+        <br />
+        <br />
+
+        <label for="bookIsbn">ISB Number</label>
+        <input
+          type="text"
+          placeholder="Enter the book ISB number"
+          name="bookIsbn"
+          id="bookIsbn"
+          required />
+
+        <br />
+        <br />
+
+        <label for="bookPubDate">Publish date</label>
+        <input
+          type="date"
+          placeholder="Enter the book publish date"
+          name="bookPubDate"
+          id="bookPubDate"
+          required />
+
+        <br />
+        <br />
+
+        <label for="bookType">Genre</label>
+
+        <!-- <select> tag creates a dropdown menu and <option> defnes an item in the dropdown list in the dropdown menu -->
+
+        <select name="bookType" id="bookType" required>
+          <option value="" disabled selected>Select an option</option>
+          <option value="educational">Educational</option>
+          <option value="history">History</option>
+          <option value="mystery">Mystery</option>
+          <option value="horror">Horror</option>
+          <option value="poetry">Poetry</option>
+          <option value="cookbooks">Cookbooks</option>
+          <option value="children's">Children's</option>
+          <option value="other">Other</option>
+        </select>
+
+        <br />
+        <br />
+
+        <!-- <button> tag creates a clickable button on a webpage type="submit" means the button submits the from data to the url in the actoin="" attribute -->
+
+        <button id="formBtn" type="submit">Submit</button>
+      </form>
+
+      <!-- List all the Books -->
+      <div class="mainContainer">
+        <!-- Table to display the book list -->
+        <table id="bookTable">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>ISBN</th>
+              <th>Publish Date</th>
+              <th>
+                Genre
+                <input
+                  type="text"
+                  id="searchGenre"
+                  placeholder="Search by genre..." />
+              </th>
+              <th>Book Age</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Book rows will be inserted here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- include the link of external script here -->
+    <script src="../JavaScript/Book-Management-System.js"></script>
+  </body>
+</html>
