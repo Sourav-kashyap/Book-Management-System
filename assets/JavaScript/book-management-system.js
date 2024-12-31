@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isbn = document.getElementById("bookIsbn").value;
     const genre = document.getElementById("bookType").value;
     const year = document.getElementById("bookPubDate").value;
+
     const age = findBookAge(year);
     /* new Date(document.getElementById("bookPubDate").value).getFullYear(); */
 
@@ -53,7 +54,7 @@ const books = [
     author: "Thomas H. Cormen",
     isbn: "9780262033848",
     genre: "educational",
-    year: "2009",
+    year: "2009-12-01",
     age: { y: 15, m: 2, d: 0 },
   },
   {
@@ -61,7 +62,7 @@ const books = [
     author: "Bram Stoker",
     isbn: "9780486266846",
     genre: "horror",
-    year: "1897",
+    year: "1897-09-20",
     age: { y: 127, m: 0, d: 0 },
   },
   {
@@ -69,7 +70,7 @@ const books = [
     author: "T.S. Eliot",
     isbn: "9780156711425",
     genre: "poetry",
-    year: "1922",
+    year: "1922-06-23",
     age: { y: 102, m: 0, d: 0 },
   },
   {
@@ -77,7 +78,7 @@ const books = [
     author: "Irma S. Rombauer",
     isbn: "9780743246262",
     genre: "cookbooks",
-    year: "1931",
+    year: "1931-01-11",
     age: { y: 93, m: 0, d: 0 },
   },
   {
@@ -85,7 +86,7 @@ const books = [
     author: "Margaret Wise Brown",
     isbn: "9780694003617",
     genre: "children's",
-    year: "1947",
+    year: "1947-09-09",
     age: { y: 77, m: 0, d: 0 },
   },
   {
@@ -93,7 +94,7 @@ const books = [
     author: "Antoine de Saint-Exupéry",
     isbn: "9780156012195",
     genre: "children's",
-    year: "1943",
+    year: "1943-12-12",
     age: { y: 81, m: 0, d: 0 },
   },
   {
@@ -101,7 +102,7 @@ const books = [
     author: "Gordon Ramsay",
     isbn: "9781408816142",
     genre: "cookbooks",
-    year: "2012",
+    year: "2012-12-31",
     age: { y: 12, m: 0, d: 0 },
   },
   {
@@ -109,7 +110,7 @@ const books = [
     author: "Stephen Hawking",
     isbn: "9780553380163",
     genre: "educational",
-    year: "1988",
+    year: "1988-10-05",
     age: { y: 36, m: 0, d: 0 },
   },
 ];
