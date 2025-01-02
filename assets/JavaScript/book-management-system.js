@@ -35,8 +35,18 @@ function validateFormData() {
   const author = document.getElementById("bookAuthor").value;
   const isbn = document.getElementById("bookIsbn").value;
 
-  if (!title || !author || !isbn) {
-    alert("All fields must be requried");
+  if (!title) {
+    alert("Title fields must be requried");
+    return false; // Something is wrong prevent form submission.
+  }
+
+  if (!author) {
+    alert("Author fields must be requried");
+    return false; // Something is wrong prevent form submission.
+  }
+
+  if (!isbn) {
+    alert("ISBN fields must be requried");
     return false; // Something is wrong prevent form submission.
   }
 

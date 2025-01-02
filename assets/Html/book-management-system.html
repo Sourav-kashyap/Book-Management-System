@@ -21,57 +21,70 @@
 
         <!-- <input> tag creates a field where users can input text. name="" is used to identify the from data when it's sublitted to the server and required means makes the field mandatory -->
 
-        <label for="bookTitle">Title</label>
+        <label for="bookTitle">Title<sup> *</sup></label>
         <input
           type="text"
           placeholder="Enter the book title"
           name="bookTitle"
           id="bookTitle"
-          required />
+          required
+          oninvalid="this.setCustomValidity('The title field is requried')"
+          oninput="this.setCustomValidity('')" />
 
         <!-- <br> tag are used to insert a line break after the input field for proper spacing -->
 
         <br />
         <br />
 
-        <label for="bookAuthor">Author</label>
+        <label for="bookAuthor">Author<sup> *</sup></label>
         <input
           type="text"
           placeholder="Enter the book Author's name"
           name="bookAuthor"
           id="bookAuthor"
-          required />
+          required
+          oninvalid="this.setCustomValidity('The author field is requried')"
+          oninput="this.setCustomValidity('')" />
 
         <br />
         <br />
 
-        <label for="bookIsbn">ISB Number</label>
+        <label for="bookIsbn">ISB Number<sup> *</sup></label>
         <input
           type="text"
           placeholder="Enter the book ISB number"
           name="bookIsbn"
           id="bookIsbn"
-          required />
+          required
+          oninvalid="this.setCustomValidity('The ISBN field is requried')"
+          oninput="this.setCustomValidity('')" />
 
         <br />
         <br />
 
-        <label for="bookPubDate">Publish date</label>
+        <label for="bookPubDate">Publish date<sup> *</sup></label>
         <input
           type="date"
           placeholder="Enter the book publish date"
           name="bookPubDate"
           id="bookPubDate"
-          required />
+          required
+          oninvalid="this.setCustomValidity('The publish date field is requried')"
+          oninput="this.setCustomValidity('')" />
 
         <br />
         <br />
 
-        <label for="bookType">Genre</label>
+        <label for="bookType">Genre<sup> *</sup></label>
 
         <!-- <select> tag creates a dropdown menu and <option> defnes an item in the dropdown list in the dropdown menu -->
 
-        <select name="bookType" id="bookType" required>
+        <select
+          name="bookType"
+          id="bookType"
+          required
+          oninvalid="this.setCustomValidity('The genre field is requried')"
+          oninput="this.setCustomValidity('')">
           <option value="" disabled selected>Select an option</option>
           <option value="educational">Educational</option>
           <option value="history">History</option>
