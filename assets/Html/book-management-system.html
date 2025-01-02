@@ -4,125 +4,133 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Management System</title>
-    <!-- include the link of external css here -->
-    <link rel="stylesheet" href="../Css/book-management-system.css" />
+    <!-- <link rel="stylesheet" href="../Css/book-management-system.css" /> -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <div class="mainContainer">
-      <h1>Book Management System</h1>
+  <body class="bg-gray-100 text-gray-800">
+    <div class="max-w-6xl mx-auto p-4">
+      <h1 class="text-3xl font-bold text-center mb-6">Book Management System</h1>
 
-      <!-- the action="" attribute defines the end point URL that will handle the form data on the server -->
-      <!-- method="" defines how the data is sent to the server POST sends the form data in the http request body. 
-            data is not appended to the url making it more secure for sensitive information. it can send larger 
-            amounts of data compared to get. -->
+      <form id="bookForm" class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <div class="mb-4">
+          <label
+            for="bookTitle"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Title<sup>*</sup></label
+          >
+          <input
+            type="text"
+            placeholder="Enter the book title"
+            name="bookTitle"
+            id="bookTitle"
+            required
+            class="w-full border border-gray-300 rounded-lg p-2"
+            oninvalid="this.setCustomValidity('The title field is required')"
+            oninput="this.setCustomValidity('')" />
+        </div>
 
-      <form id="bookForm">
-        <!-- <lable> </lable> tag is used to associate a description with the input field and for="" attribute links the lable to the input field with the id="" clicking the lable focuses the correspondiog input field -->
+        <div class="mb-4">
+          <label
+            for="bookAuthor"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Author<sup>*</sup></label
+          >
+          <input
+            type="text"
+            placeholder="Enter the book Author's name"
+            name="bookAuthor"
+            id="bookAuthor"
+            required
+            class="w-full border border-gray-300 rounded-lg p-2"
+            oninvalid="this.setCustomValidity('The author field is required')"
+            oninput="this.setCustomValidity('')" />
+        </div>
 
-        <!-- <input> tag creates a field where users can input text. name="" is used to identify the from data when it's sublitted to the server and required means makes the field mandatory -->
+        <div class="mb-4">
+          <label
+            for="bookIsbn"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >ISBN Number<sup>*</sup></label
+          >
+          <input
+            type="text"
+            placeholder="Enter the book ISBN number"
+            name="bookIsbn"
+            id="bookIsbn"
+            required
+            class="w-full border border-gray-300 rounded-lg p-2"
+            oninvalid="this.setCustomValidity('The ISBN field is required')"
+            oninput="this.setCustomValidity('')" />
+        </div>
 
-        <label for="bookTitle">Title<sup> *</sup></label>
-        <input
-          type="text"
-          placeholder="Enter the book title"
-          name="bookTitle"
-          id="bookTitle"
-          required
-          oninvalid="this.setCustomValidity('The title field is requried')"
-          oninput="this.setCustomValidity('')" />
+        <div class="mb-4">
+          <label
+            for="bookPubDate"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Publish Date<sup>*</sup></label
+          >
+          <input
+            type="date"
+            name="bookPubDate"
+            id="bookPubDate"
+            required
+            class="w-full border border-gray-300 rounded-lg p-2"
+            oninvalid="this.setCustomValidity('The publish date field is required')"
+            oninput="this.setCustomValidity('')" />
+        </div>
 
-        <!-- <br> tag are used to insert a line break after the input field for proper spacing -->
+        <div class="mb-4">
+          <label
+            for="bookType"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Genre<sup>*</sup></label
+          >
+          <select
+            name="bookType"
+            id="bookType"
+            required
+            class="w-full border border-gray-300 rounded-lg p-2"
+            oninvalid="this.setCustomValidity('The genre field is required')"
+            oninput="this.setCustomValidity('')">
+            <option value="" disabled selected>Select an option</option>
+            <option value="educational">Educational</option>
+            <option value="history">History</option>
+            <option value="mystery">Mystery</option>
+            <option value="horror">Horror</option>
+            <option value="poetry">Poetry</option>
+            <option value="cookbooks">Cookbooks</option>
+            <option value="children's">Children's</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-        <br />
-        <br />
-
-        <label for="bookAuthor">Author<sup> *</sup></label>
-        <input
-          type="text"
-          placeholder="Enter the book Author's name"
-          name="bookAuthor"
-          id="bookAuthor"
-          required
-          oninvalid="this.setCustomValidity('The author field is requried')"
-          oninput="this.setCustomValidity('')" />
-
-        <br />
-        <br />
-
-        <label for="bookIsbn">ISB Number<sup> *</sup></label>
-        <input
-          type="text"
-          placeholder="Enter the book ISB number"
-          name="bookIsbn"
-          id="bookIsbn"
-          required
-          oninvalid="this.setCustomValidity('The ISBN field is requried')"
-          oninput="this.setCustomValidity('')" />
-
-        <br />
-        <br />
-
-        <label for="bookPubDate">Publish date<sup> *</sup></label>
-        <input
-          type="date"
-          placeholder="Enter the book publish date"
-          name="bookPubDate"
-          id="bookPubDate"
-          required
-          oninvalid="this.setCustomValidity('The publish date field is requried')"
-          oninput="this.setCustomValidity('')" />
-
-        <br />
-        <br />
-
-        <label for="bookType">Genre<sup> *</sup></label>
-
-        <!-- <select> tag creates a dropdown menu and <option> defnes an item in the dropdown list in the dropdown menu -->
-
-        <select
-          name="bookType"
-          id="bookType"
-          required
-          oninvalid="this.setCustomValidity('The genre field is requried')"
-          oninput="this.setCustomValidity('')">
-          <option value="" disabled selected>Select an option</option>
-          <option value="educational">Educational</option>
-          <option value="history">History</option>
-          <option value="mystery">Mystery</option>
-          <option value="horror">Horror</option>
-          <option value="poetry">Poetry</option>
-          <option value="cookbooks">Cookbooks</option>
-          <option value="children's">Children's</option>
-          <option value="other">Other</option>
-        </select>
-
-        <br />
-        <br />
-
-        <!-- <button> tag creates a clickable button on a webpage type="submit" means the button submits the from data to the url in the actoin="" attribute -->
-
-        <button id="formBtn" type="submit">Submit</button>
+        <button
+          id="formBtn"
+          type="submit"
+          class="w-full bg-blue-500 text-white font-medium py-2 rounded-lg hover:bg-blue-600">
+          Submit
+        </button>
       </form>
 
-      <!-- List all the Books -->
-      <div class="mainContainer">
-        <!-- Table to display the book list -->
-        <table id="bookTable">
+      <div class="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
+        <table id="bookTable" class="min-w-full table-auto border-collapse">
           <thead>
-            <tr>
-              <th>Title</th>
-              <th>Author</th>
-              <th>ISBN</th>
-              <th>Publish Date</th>
-              <th>
+            <tr class="bg-gray-200 text-gray-600 text-left text-sm">
+              <th class="py-2 px-4">Title</th>
+              <th class="py-2 px-4">Author</th>
+              <th class="py-2 px-4">ISBN</th>
+              <th class="py-2 px-4">Publish Date</th>
+              <th class="py-2 px-4">
                 Genre
                 <input
                   type="text"
                   id="searchGenre"
-                  placeholder="Search by genre..." />
+                  placeholder="Search by genre..."
+                  class="mt-1 block w-full border border-gray-300 rounded-lg p-2 text-gray-700 bg-white focus:ring-blue-500 focus:border-blue-500" />
               </th>
-              <th>Book Age</th>
-              <th>Actions</th>
+              <th class="py-2 px-4">Book Age</th>
+              <th class="py-2 px-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -131,7 +139,6 @@
         </table>
       </div>
     </div>
-    <!-- include the link of external script here -->
     <script src="../JavaScript/book-management-system.js"></script>
   </body>
 </html>

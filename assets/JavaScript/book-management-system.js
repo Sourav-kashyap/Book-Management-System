@@ -72,22 +72,32 @@ const displayBook = (books) => {
 
   books.forEach((book) => {
     const row = document.createElement("tr");
+    row.className = "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
     row.innerHTML = `
-            <td>${book.title}</td>
-            <td>${book.author}</td>
-            <td>${book.isbn}</td>
-            <td>${book.year}</td>
-            <td>${book.genre}</td>
-            <td>${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
-            <td>
-                <button id="deleteBtn" onclick="deleteBook('${book.isbn}')">Delete</button>
-                <button id="editBtn" onclick="editBook('${book.isbn}')">Edit</button>
+            <td class="py-2 px-4">${book.title}</td>
+            <td class="py-2 px-4">${book.author}</td>
+            <td class="py-2 px-4">${book.isbn}</td>
+            <td class="py-2 px-4">${book.year}</td>
+            <td class="py-2 px-4">${book.genre}</td>
+            <td class="py-2 px-4">${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
+            <td class="py-2 px-4 flex space-x-3">
+                <button
+                  id="deleteBtn"
+                  onclick="deleteBook('${book.isbn}')"
+                  class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">
+                  Delete
+                </button>
+                <button
+                  id="editBtn"
+                  onclick="editBook('${book.isbn}')"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
+                  Edit
+                </button>
             </td>
         `;
     tableBody.appendChild(row);
   });
 };
-
 const updateBook = (isbn, updatedData) => {
   const bookIndex = books.findIndex((book) => book.isbn === isbn);
   if (bookIndex !== -1) {
