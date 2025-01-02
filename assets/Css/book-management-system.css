@@ -90,12 +90,12 @@ th {
 }
 
 #deleteBtn:hover {
-  background-color: #ba181b;
+  background-color: red;
   color: black;
 }
 
 #editBtn:hover {
-  background-color: #55a630;
+  background-color: green;
   color: black;
 }
 

@@ -1,4 +1,4 @@
-/*  DOMContentLoaded is an event in JS that fires when the initial HTML document has been completely 
+/*  DOMContentLoaded is an event in JS that fires when the initial HTML document has been completely
     loaded and parsed without waiting for stylesheets, image, and other resources to finish loading */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addBook({ title, author, isbn, genre, year, age });
 
-    /* 
-            reset function is a built-in JS method on HTML form elements. it clear all user
-            input in the form fields, resetting them to their intitial values(defined in the 
-            HTML or blanck by default)
-        */
+    /*
+        reset function is a built-in JS method on HTML form elements. it clear all user
+        input in the form fields, resetting them to their intitial values(defined in the
+        HTML or blanck by default)
+    */
     form.reset();
   });
+  fetchBooksFromApi();
 });
 
 function validateFormData() {
@@ -48,72 +49,7 @@ function validateFormData() {
 }
 
 /* Book array store book objects. */
-const books = [
-  {
-    title: "Introduction to Algorithms",
-    author: "Thomas H. Cormen",
-    isbn: "9780262033848",
-    genre: "educational",
-    year: "2009-12-01",
-    age: { y: 15, m: 2, d: 0 },
-  },
-  {
-    title: "Dracula",
-    author: "Bram Stoker",
-    isbn: "9780486266846",
-    genre: "horror",
-    year: "1897-09-20",
-    age: { y: 127, m: 0, d: 0 },
-  },
-  {
-    title: "The Waste Land",
-    author: "T.S. Eliot",
-    isbn: "9780156711425",
-    genre: "poetry",
-    year: "1922-06-23",
-    age: { y: 102, m: 0, d: 0 },
-  },
-  {
-    title: "The Joy of Cooking",
-    author: "Irma S. Rombauer",
-    isbn: "9780743246262",
-    genre: "cookbooks",
-    year: "1931-01-11",
-    age: { y: 93, m: 0, d: 0 },
-  },
-  {
-    title: "Goodnight Moon",
-    author: "Margaret Wise Brown",
-    isbn: "9780694003617",
-    genre: "children's",
-    year: "1947-09-09",
-    age: { y: 77, m: 0, d: 0 },
-  },
-  {
-    title: "The Little Prince",
-    author: "Antoine de Saint-Exupéry",
-    isbn: "9780156012195",
-    genre: "children's",
-    year: "1943-12-12",
-    age: { y: 81, m: 0, d: 0 },
-  },
-  {
-    title: "The Cookbook for the Modern Chef",
-    author: "Gordon Ramsay",
-    isbn: "9781408816142",
-    genre: "cookbooks",
-    year: "2012-12-31",
-    age: { y: 12, m: 0, d: 0 },
-  },
-  {
-    title: "A Brief History of Time",
-    author: "Stephen Hawking",
-    isbn: "9780553380163",
-    genre: "educational",
-    year: "1988-10-05",
-    age: { y: 36, m: 0, d: 0 },
-  },
-];
+let books = [];
 
 const addBook = (book) => {
   books.push(book);
@@ -126,17 +62,17 @@ const displayBook = (books) => {
 
   books.forEach((book) => {
     const row = document.createElement("tr");
-    row.innerHTML = ` 
-            <td>${book.title}</td> 
-            <td>${book.author}</td> 
-            <td>${book.isbn}</td> 
-            <td>${book.year}</td> 
-            <td>${book.genre}</td> 
+    row.innerHTML = `
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.isbn}</td>
+            <td>${book.year}</td>
+            <td>${book.genre}</td>
             <td>${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
             <td>
                 <button id="deleteBtn" onclick="deleteBook('${book.isbn}')">Delete</button>
                 <button id="editBtn" onclick="editBook('${book.isbn}')">Edit</button>
-            </td> 
+            </td>
         `;
     tableBody.appendChild(row);
   });
@@ -161,7 +97,7 @@ const editBook = (isbn) => {
     document.getElementById("bookTitle").value = book.title;
     document.getElementById("bookAuthor").value = book.author;
     document.getElementById("bookIsbn").value = book.isbn;
-    document.getElementById("bookType").value = book.genre;
+    document.getElementById("bookType").value = book.genre.toLowerCase();
     document.getElementById("bookPubDate").value = book.year;
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -230,12 +166,50 @@ const findBookAge = (year) => {
 };
 
 const inputGenre = document.getElementById("searchGenre");
-inputGenre.addEventListener("input", () => {
-  const inputValue = inputGenre.value.toLowerCase();
-  if (inputValue == "") {
-    displayBook(books);
-  } else {
-    const resultBooks = books.filter((book) => book.genre === inputValue);
-    displayBook(resultBooks);
-  }
+inputGenre.addEventListener("input", async () => {
+    const inputValue = inputGenre.value.toLowerCase();
+    try {
+        if (inputValue == "") {
+            displayBook(books);
+        } else {
+            const resultBooks = await filterBooksByGenre(inputValue);
+            displayBook(resultBooks);
+        }
+    } catch (error) {
+        console.error("Error filtering books by genre:", error);
+    }
 });
+
+
+const fetchBooksFromApi = async () => {
+  try {
+    const respsone = await fetch("/Book-Management-System/dummy.json");
+    if (!respsone.ok) throw new Error("Failed to fetch books");
+    const data = await respsone.json();
+    const fetchBooks = data.map((book, index) => ({
+      title: book.title,
+      author: book.author,
+      isbn: book.isbn,
+      genre: book.genre,
+      year: book.year,
+      age: book.age,
+    }));
+    books = [...books, ...fetchBooks];
+    displayBook(books);
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  }
+};
+
+const filterBooksByGenre = (genre) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            try {
+                const filteredBooks = books.filter((book) => book.genre.toLowerCase() === genre);
+                resolve(filteredBooks);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    });
+};
