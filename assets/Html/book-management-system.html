@@ -10,7 +10,9 @@
   </head>
   <body class="bg-gray-100 text-gray-800">
     <div class="max-w-6xl mx-auto p-4">
-      <h1 class="text-3xl font-bold text-center mb-6">Book Management System</h1>
+      <h1 class="text-3xl font-bold text-center mb-6">
+        Book Management System
+      </h1>
 
       <form id="bookForm" class="bg-white shadow-md rounded-lg p-6 mb-8">
         <div class="mb-4">
@@ -129,7 +131,15 @@
                   placeholder="Search by genre..."
                   class="mt-1 block w-full border border-gray-300 rounded-lg p-2 text-gray-700 bg-white focus:ring-blue-500 focus:border-blue-500" />
               </th>
-              <th class="py-2 px-4">Book Age</th>
+              <th class="py-2 px-4">
+                Book Age
+                <button
+                  id="sortBtn"
+                  class="w-full bg-green-500 text-white font-medium py-2 rounded-lg hover:bg-green-600 mt-4"
+                  onclick="sortBooks()">
+                  Sort Books by Age
+                </button>
+              </th>
               <th class="py-2 px-4">Actions</th>
             </tr>
           </thead>

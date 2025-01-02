@@ -72,7 +72,8 @@ const displayBook = (books) => {
 
   books.forEach((book) => {
     const row = document.createElement("tr");
-    row.className = "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+    row.className =
+      "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
     row.innerHTML = `
             <td class="py-2 px-4">${book.title}</td>
             <td class="py-2 px-4">${book.author}</td>
@@ -187,19 +188,18 @@ const findBookAge = (year) => {
 
 const inputGenre = document.getElementById("searchGenre");
 inputGenre.addEventListener("input", async () => {
-    const inputValue = inputGenre.value.toLowerCase();
-    try {
-        if (inputValue == "") {
-            displayBook(books);
-        } else {
-            const resultBooks = await filterBooksByGenre(inputValue);
-            displayBook(resultBooks);
-        }
-    } catch (error) {
-        console.error("Error filtering books by genre:", error);
+  const inputValue = inputGenre.value.toLowerCase();
+  try {
+    if (inputValue == "") {
+      displayBook(books);
+    } else {
+      const resultBooks = await filterBooksByGenre(inputValue);
+      displayBook(resultBooks);
     }
+  } catch (error) {
+    console.error("Error filtering books by genre:", error);
+  }
 });
-
 
 const fetchBooksFromApi = async () => {
   try {
@@ -222,14 +222,38 @@ const fetchBooksFromApi = async () => {
 };
 
 const filterBooksByGenre = (genre) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            try {
-                const filteredBooks = books.filter((book) => book.genre.toLowerCase() === genre);
-                resolve(filteredBooks);
-            } catch (error) {
-                reject(error);
-            }
-        });
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const filteredBooks = books.filter(
+          (book) => book.genre.toLowerCase() === genre
+        );
+        resolve(filteredBooks);
+      } catch (error) {
+        reject(error);
+      }
     });
+  });
+};
+
+/* 
+  Flag to toggle between ascending and descending order
+  true -> ascending
+  false -> descending
+*/
+
+let isAscending = true;
+
+const sortBooks = () => {
+  books.sort((a, b) => {
+    // 1 y, 0 m, 0 d --> 1 * 365 = 365 days
+    const ageA = a.age.y * 365 + a.age.m * 30 + a.age.d;
+    const ageB = b.age.y * 365 + b.age.m * 30 + b.age.d;
+
+    return isAscending ? ageA - ageB : ageB - ageA;
+  });
+
+  isAscending = !isAscending;
+
+  displayBook(books);
 };
