@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-b from-white to-gray-100 text-gray-800 font-sans">
+    <div
+      class="max-w-3xl mx-auto mt-16 p-6 bg-white shadow-lg rounded-lg text-center">
+      <img
+        id="book-image"
+        class="w-40 h-56 mx-auto mb-6 border border-gray-300 rounded-lg object-cover"
+        src=""
+        alt="Book Image" />
+      <h1 id="book-title" class="text-3xl font-bold mb-4 text-gray-800">
+        Loading...
+      </h1>
+      <p id="book-description" class="text-gray-600 mb-6">Please wait...</p>
+
+      <div class="space-y-4">
+        <div class="text-lg">
+          <span class="font-semibold text-gray-700">Author:</span>
+          <span id="book-author" class="text-gray-600">N/A</span>
+        </div>
+        <div class="text-lg">
+          <span class="font-semibold text-gray-700">ISBN:</span>
+          <span id="book-isbn" class="text-gray-600">N/A</span>
+        </div>
+        <div class="text-lg">
+          <span class="font-semibold text-gray-700">Genre:</span>
+          <span id="book-genre" class="text-gray-600">N/A</span>
+        </div>
+        <div class="text-lg">
+          <span class="font-semibold text-gray-700">Publish Date:</span>
+          <span id="book-publish-date" class="text-gray-600">N/A</span>
+        </div>
+      </div>
+      <a
+        href="/Book-Management-System/assets/Html/book-management-system.html"
+        class="mt-8 inline-block px-6 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition duration-300">
+        Go Back
+      </a>
+    </div>
+
+    <script src="../JavaScript/detail-book.js"></script>
+    
+  </body>
+</html>

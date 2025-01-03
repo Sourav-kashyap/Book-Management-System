@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Book 1",
+    "description": "Book 1 is a thought-provoking educational resource designed to provide readers with an in-depth understanding of key concepts in various subjects. Perfect for students and lifelong learners, this book explores complex topics with clarity and precision. The author delves into a range of themes, offering step-by-step explanations, illustrative examples, and practical applications to solidify understanding. Whether you're preparing for exams, seeking to enhance your knowledge, or exploring new areas of interest, this book is a valuable companion for personal and academic growth.",
+    "author": "Author 1",
+    "isbn": "001",
+    "genre": "Educational",
+    "year": "2020-03-24",
+    "publish_date": "March 24, 2020",
+    "image": "https://via.placeholder.com/150?text=Book+1"
+  },
+  {
+    "title": "Book 2",
+    "description": "Book 2 offers a captivating journey through the annals of history, shedding light on pivotal events, influential figures, and groundbreaking discoveries that shaped the world. The author presents a narrative rich with detail and context, bringing the past to life in a compelling and accessible manner. Readers will gain insights into the cultural, political, and social forces that have defined human civilization. This book is an excellent resource for history enthusiasts, students, and anyone curious about the origins of our modern world.",
+    "author": "Author 2",
+    "isbn": "002",
+    "genre": "History",
+    "year": "2019-12-21",
+    "publish_date": "December 21, 2019",
+    "image": "https://via.placeholder.com/150?text=Book+2"
+  },
+  {
+    "title": "Book 3",
+    "description": "Book 3 is a gripping mystery novel that will keep readers on the edge of their seats. The story revolves around an intricate web of secrets, lies, and unexpected twists. The protagonist, a determined investigator, navigates a maze of clues to uncover the truth behind a puzzling crime. With vivid characterizations, a fast-paced plot, and a series of shocking revelations, this book is a masterclass in suspense and intrigue. Ideal for fans of detective stories and thrillers, it promises an unforgettable reading experience.",
+    "author": "Author 3",
+    "isbn": "003",
+    "genre": "Mystery",
+    "year": "2021-05-18",
+    "publish_date": "May 18, 2021",
+    "image": "https://via.placeholder.com/150?text=Book+3"
+  },
+  {
+    "title": "Book 4",
+    "description": "Book 4 plunges readers into a chilling world of horror and suspense. The narrative unfolds in a seemingly ordinary setting, which gradually reveals its sinister secrets. As the characters confront their deepest fears, the tension escalates, leading to a heart-stopping climax. The author masterfully blends elements of psychological horror, supernatural phenomena, and human vulnerability to create an unforgettable tale. This book is a must-read for fans of the horror genre who enjoy stories that linger in their minds long after the final page.",
+    "author": "Author 4",
+    "isbn": "004",
+    "genre": "Horror",
+    "year": "2018-10-30",
+    "publish_date": "October 30, 2018",
+    "image": "https://via.placeholder.com/150?text=Book+4"
+  },
+  {
+    "title": "Book 5",
+    "description": "Book 5 is a heartfelt collection of poetry that captures the essence of human emotions and experiences. Through a series of beautifully crafted verses, the author explores themes of love, loss, hope, and resilience. Each poem is a window into the soul, offering readers a chance to reflect on their own journeys and connect with universal truths. The lyrical quality of the writing and the depth of emotion make this book a treasure for poetry lovers and anyone seeking solace in the written word.",
+    "author": "Author 5",
+    "isbn": "005",
+    "genre": "Poetry",
+    "year": "2022-04-15",
+    "publish_date": "April 15, 2022",
+    "image": "https://via.placeholder.com/150?text=Book+5"
+  },
+  {
+    "title": "Book 6",
+    "description": "Book 6 is a comprehensive guide for culinary enthusiasts, offering a wealth of recipes, tips, and techniques for creating delicious meals. The author combines expertise and passion to present a range of dishes, from simple comfort foods to gourmet creations. Each recipe is accompanied by detailed instructions, helpful notes, and vibrant photographs, making it accessible to both novice and experienced cooks. This book is a celebration of food, culture, and creativity, inspiring readers to embark on their own culinary adventures.",
+    "author": "Author 6",
+    "isbn": "006",
+    "genre": "Cookbooks",
+    "year": "2023-01-01",
+    "publish_date": "January 1, 2023",
+    "image": "https://via.placeholder.com/150?text=Book+6"
+  },
+  {
+    "title": "Book 7",
+    "description": "Book 7 is a delightful collection of stories crafted for young readers. Each tale is infused with imagination, humor, and valuable life lessons, making it a perfect companion for bedtime reading or quiet afternoons. The characters are endearing, the adventures are enchanting, and the themes are universally relatable. This book is a testament to the power of storytelling and its ability to inspire, educate, and entertain children of all ages.",
+    "author": "Author 7",
+    "isbn": "007",
+    "genre": "Children's",
+    "year": "2020-07-25",
+    "publish_date": "July 25, 2020",
+    "image": "https://via.placeholder.com/150?text=Book+7"
+  },
+  {
+    "title": "Book 8",
+    "description": "Book 8 is a unique anthology that defies categorization, blending diverse topics and perspectives into a cohesive and thought-provoking narrative. The author explores unconventional themes with creativity and depth, challenging readers to expand their horizons and consider new ideas. Whether delving into philosophy, science, art, or human relationships, this book offers a refreshing and enlightening experience. Ideal for curious minds, it invites readers to embark on a journey of discovery and reflection.",
+    "author": "Author 8",
+    "isbn": "008",
+    "genre": "Other",
+    "year": "2019-03-10",
+    "publish_date": "March 10, 2019",
+    "image": "https://kids.scholastic.com/content/dam/scholastic/kids/content-cards/image/harry-potter/hp-ml-1.png"
+  }
+]

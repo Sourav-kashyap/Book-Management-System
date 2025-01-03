@@ -70,7 +70,7 @@ const displayBook = (books) => {
   const tableBody = document.querySelector("#bookTable tbody");
   tableBody.innerHTML = "";
 
-  books.forEach((book) => {
+  books.forEach((book, index) => {
     const row = document.createElement("tr");
     row.className =
       "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
@@ -79,7 +79,14 @@ const displayBook = (books) => {
             <td class="py-2 px-4">${book.author}</td>
             <td class="py-2 px-4">${book.isbn}</td>
             <td class="py-2 px-4">${book.year}</td>
-            <td class="py-2 px-4">${book.genre}</td>
+            <td class="py-2 px-4 relative">${book.genre} 
+              <button
+                id="infoBtn"
+                onclick="infoBook('${index}')"
+                class="absolute top-1.5 right-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">
+                Book info.
+              </button>
+            </td>
             <td class="py-2 px-4">${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
             <td class="py-2 px-4 flex space-x-3">
                 <button
@@ -257,3 +264,7 @@ const sortBooks = () => {
 
   displayBook(books);
 };
+
+function infoBook(bookIndex) {
+  window.location.href = `detail-book.html?index=${bookIndex}`;
+}
