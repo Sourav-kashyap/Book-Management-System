@@ -249,20 +249,21 @@ const filterBooksByGenre = (genre) => {
   false -> descending
 */
 
-let isAscending = true;
-
-const sortBooks = () => {
+const sortBooks = (sortBy) => {
   books.sort((a, b) => {
-    // 1 y, 0 m, 0 d --> 1 * 365 = 365 days
     const ageA = a.age.y * 365 + a.age.m * 30 + a.age.d;
     const ageB = b.age.y * 365 + b.age.m * 30 + b.age.d;
-
-    return isAscending ? ageA - ageB : ageB - ageA;
+    return sortBy ? ageA - ageB : ageB - ageA;
   });
-
-  isAscending = !isAscending;
-
   displayBook(books);
+};
+
+const handleSortChange = (value) => {
+  if (value === "ascending") {
+    sortBooks(true);
+  } else if (value === "descending") {
+    sortBooks(false);
+  }
 };
 
 function infoBook(bookIndex) {

@@ -133,12 +133,20 @@
               </th>
               <th class="py-2 px-4">
                 Book Age
-                <button
+                <!-- <button
                   id="sortBtn"
                   class="w-full bg-green-500 text-white font-medium py-2 rounded-lg hover:bg-green-600 mt-4"
                   onclick="sortBooks()">
                   Sort Books by Age
-                </button>
+                </button> -->
+                <select
+                  id="sortBtn"
+                  class="w-full bg-blue-500 cursor-pointer text-white font-medium py-2 hover:bg-blue-600 mt-4"
+                  onchange="handleSortChange(this.value)">
+                  <option value="" disabled selected>Sort by Age</option>
+                  <option value="ascending">Ascending</option>
+                  <option value="descending">Descending</option>
+                </select>
               </th>
               <th class="py-2 px-4">Actions</th>
             </tr>
