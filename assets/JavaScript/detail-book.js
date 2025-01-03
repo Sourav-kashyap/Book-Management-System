@@ -3,7 +3,7 @@ function getQueryParameter(bookIndex) {
   return urlParams.get(bookIndex);
 }
 
-const bookIndex = getQueryParameter("index"); 
+const bookIndex = getQueryParameter("index");
 
 if (bookIndex !== null) {
   fetch("/Book-Management-System/dummyBooksDetails.json")
@@ -25,7 +25,8 @@ if (bookIndex !== null) {
         document.getElementById("book-title").textContent = "Book not found";
         document.getElementById("book-description").textContent =
           "No details available.";
-        document.getElementById("book-image").src = "";
+        document.getElementById("book-image").src =
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcbS_-_ReefLn6YBu1nQCO2Nnmol793vjHbye5mD0dp0Y9fklSH3sZREaB23V2dNIUF8Y&usqp=CAU";
         document.getElementById("book-image").alt = "No image available";
       }
     })
