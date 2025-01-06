@@ -1,6 +1,3 @@
-/*  DOMContentLoaded is an event in JS that fires when the initial HTML document has been completely
-    loaded and parsed without waiting for stylesheets, image, and other resources to finish loading */
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("bookForm");
 
@@ -14,19 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const isbn = document.getElementById("bookIsbn").value;
     const genre = document.getElementById("bookType").value;
     const year = document.getElementById("bookPubDate").value;
+    const price = document.getElementById("bookPrice").value;
+    // const size = document.getElementById("bookSize").value;
+    // const pages = document.getElementById("bookPages").value;
 
-    const age = findBookAge(year);
-    /* new Date(document.getElementById("bookPubDate").value).getFullYear(); */
+    const age = BaseBook.findBookAge(year);
 
-    addBook({ title, author, isbn, genre, year, age });
+    addBook(new BaseBook(title, author, isbn, genre, year, age, price, "", ""));
 
-    /*
-        reset function is a built-in JS method on HTML form elements. it clear all user
-        input in the form fields, resetting them to their intitial values(defined in the
-        HTML or blanck by default)
-    */
+    // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
+
     form.reset();
   });
+
   fetchBooksFromApi();
 });
 
@@ -58,7 +55,74 @@ function validateFormData() {
   return true; // All fields are correct allow form submission.
 }
 
-/* Book array store book objects. */
+class BaseBook {
+  constructor(title, author, isbn, genre, year, age, price, size, pages) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.genre = genre;
+    this.year = year;
+    this.age = age;
+    this.price = price;
+    this.size = size;
+    this.pages = pages;
+  }
+
+  getBookAge() {
+    return `${this.age.y} years, ${this.age.m} months, ${this.age.d} days`;
+  }
+
+  static findBookAge(year) {
+    const currDate = new Date();
+    const bookDate = new Date(year);
+
+    let diffYear = currDate.getFullYear() - bookDate.getFullYear();
+    let diffMonth = currDate.getMonth() - bookDate.getMonth();
+    let diffDay = currDate.getDate() - bookDate.getDate();
+
+    if (diffDay < 0) {
+      diffMonth -= 1;
+      diffDay += new Date(
+        currDate.getFullYear(),
+        currDate.getMonth(),
+        0
+      ).getDate();
+    }
+
+    if (diffMonth < 0) {
+      diffYear -= 1;
+      diffMonth += 12;
+    }
+
+    if (diffMonth >= 12) {
+      diffYear += Math.floor(diffMonth / 12);
+      diffMonth %= 12;
+    }
+
+    return { y: diffYear, m: diffMonth, d: diffDay };
+  }
+}
+
+class EBook extends BaseBook {
+  constructor(title, author, isbn, genre, year, age) {
+    super(title, author, isbn, genre, year, age);
+  }
+
+  calculateDiscountPrice(originalPrice) {
+    return originalPrice * 0.8; // 20% discount for eBooks
+  }
+}
+
+class PrintedBook extends BaseBook {
+  constructor(title, author, isbn, genre, year, age) {
+    super(title, author, isbn, genre, year, age);
+  }
+
+  calculateDiscountPrice(originalPrice) {
+    return originalPrice * 0.9; // 10% discount for printed books
+  }
+}
+
 let books = [];
 
 const addBook = (book) => {
@@ -75,37 +139,65 @@ const displayBook = (books) => {
     row.className =
       "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
     row.innerHTML = `
-            <td class="py-2 px-4">${book.title}</td>
-            <td class="py-2 px-4">${book.author}</td>
-            <td class="py-2 px-4">${book.isbn}</td>
-            <td class="py-2 px-4">${book.year}</td>
-            <td class="py-2 px-4 relative">${book.genre} 
-              <button
-                id="infoBtn"
-                onclick="infoBook('${index}')"
-                class="absolute top-1.5 right-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">
-                Book info.
-              </button>
-            </td>
-            <td class="py-2 px-4">${book.age.y} years, ${book.age.m} months, ${book.age.d} days</td>
-            <td class="py-2 px-4 flex space-x-3">
-                <button
-                  id="deleteBtn"
-                  onclick="deleteBook('${book.isbn}')"
-                  class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">
-                  Delete
-                </button>
-                <button
-                  id="editBtn"
-                  onclick="editBook('${book.isbn}')"
-                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
-                  Edit
-                </button>
-            </td>
-        `;
+      <td class="py-2 px-4">${book.title}</td>
+      <td class="py-2 px-4">${book.author}</td>
+      <td class="py-2 px-4">${book.isbn}</td>
+      <td class="py-2 px-4">${book.year}</td>
+      <td class="py-2 px-4 relative">${book.genre}
+        <button
+          id="infoBtn"
+          onclick="infoBook('${index}')"
+          class="absolute top-1.5 right-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">
+          Book info.
+        </button>
+      </td>
+      <td class="py-2 px-4">${book.getBookAge()}</td>
+      <td class="py-2 px-4 flex space-x-3">
+        <button
+          id="deleteBtn"
+          onclick="deleteBook('${book.isbn}')"
+          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">
+          Delete
+        </button>
+        <button
+          id="editBtn"
+          onclick="editBook('${book.isbn}')"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
+          Edit
+        </button>
+      </td>
+      <td class="text-center">${book.price}</td>
+      <td class="text-center">
+      ${parseInt(
+        new EBook(
+          book.title,
+          book.author,
+          book.isbn,
+          book.genre,
+          book.year,
+          BaseBook.findBookAge(book.age)
+        ).calculateDiscountPrice(parseInt(book.price, 10)),
+        10
+      )}
+      </td>
+      <td class="text-center">
+      ${parseInt(
+        new PrintedBook(
+          book.title,
+          book.author,
+          book.isbn,
+          book.genre,
+          book.year,
+          BaseBook.findBookAge(book.age)
+        ).calculateDiscountPrice(parseInt(book.price, 10)),
+        10
+      )}
+      </td>
+    `;
     tableBody.appendChild(row);
   });
 };
+
 const updateBook = (isbn, updatedData) => {
   const bookIndex = books.findIndex((book) => book.isbn === isbn);
   if (bookIndex !== -1) {
@@ -127,6 +219,7 @@ const editBook = (isbn) => {
     document.getElementById("bookIsbn").value = book.isbn;
     document.getElementById("bookType").value = book.genre.toLowerCase();
     document.getElementById("bookPubDate").value = book.year;
+    document.getElementById("bookPrice").value = book.price;
 
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("bookForm");
@@ -138,6 +231,7 @@ const editBook = (isbn) => {
           isbn: document.getElementById("bookIsbn").value,
           year: document.getElementById("bookPubDate").value,
           genre: document.getElementById("bookType").value,
+          price: document.getElementById("bookPrice").value,
         };
         updateBook(isbn, updatedData);
       };
@@ -149,7 +243,6 @@ const editBook = (isbn) => {
 };
 
 const deleteBook = (isbn) => {
-  // findIndex method returns the index of the first element that satisfies the condition.
   const removeBookIndex = books.findIndex((book) => book.isbn === isbn);
   if (removeBookIndex !== -1) {
     books.splice(removeBookIndex, 1);
@@ -159,38 +252,31 @@ const deleteBook = (isbn) => {
   }
 };
 
-const findBookAge = (year) => {
-  const currDate = new Date();
-  const bookDate = new Date(year);
+const fetchBooksFromApi = async () => {
+  try {
+    const response = await fetch("../../dummy.json");
+    if (!response.ok) throw new Error("Failed to fetch books");
+    const data = await response.json();
 
-  let diffYear = currDate.getFullYear() - bookDate.getFullYear();
-  let diffMonth = currDate.getMonth() - bookDate.getMonth();
-  let diffDay = currDate.getDate() - bookDate.getDate();
-
-  if (diffDay < 0) {
-    diffMonth -= 1; // Borrow a month
-    diffDay += new Date(
-      currDate.getFullYear(),
-      currDate.getMonth(),
-      0
-    ).getDate(); // Add days from the previous month
+    const fetchBooks = data.map(
+      (book) =>
+        new BaseBook(
+          book.title,
+          book.author,
+          book.isbn,
+          book.genre.toLowerCase(),
+          book.year,
+          book.age,
+          book.price,
+          book.size,
+          book.pages
+        )
+    );
+    books = [...books, ...fetchBooks];
+    displayBook(books);
+  } catch (error) {
+    alert(`Error: ${error.message}`);
   }
-
-  if (diffMonth < 0) {
-    diffYear -= 1; // Borrow a year
-    diffMonth += 12;
-  }
-
-  if (diffMonth >= 12) {
-    diffYear += Math.floor(diffMonth / 12);
-    diffMonth %= 12;
-  }
-
-  return {
-    y: diffYear,
-    m: diffMonth,
-    d: diffDay,
-  };
 };
 
 const inputGenre = document.getElementById("searchGenre");
@@ -208,26 +294,6 @@ inputGenre.addEventListener("input", async () => {
   }
 });
 
-const fetchBooksFromApi = async () => {
-  try {
-    const respsone = await fetch("/Book-Management-System/dummy.json");
-    if (!respsone.ok) throw new Error("Failed to fetch books");
-    const data = await respsone.json();
-    const fetchBooks = data.map((book, index) => ({
-      title: book.title,
-      author: book.author,
-      isbn: book.isbn,
-      genre: book.genre,
-      year: book.year,
-      age: book.age,
-    }));
-    books = [...books, ...fetchBooks];
-    displayBook(books);
-  } catch (error) {
-    alert(`Error: ${error.message}`);
-  }
-};
-
 const filterBooksByGenre = (genre) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -243,7 +309,7 @@ const filterBooksByGenre = (genre) => {
   });
 };
 
-/* 
+/*
   Flag to toggle between ascending and descending order
   true -> ascending
   false -> descending

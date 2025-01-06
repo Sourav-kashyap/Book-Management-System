@@ -6,10 +6,13 @@ function getQueryParameter(bookIndex) {
 const bookIndex = getQueryParameter("index");
 
 if (bookIndex !== null) {
-  fetch("/Book-Management-System/dummyBooksDetails.json")
+  fetch("../../dummyBooksDetails.json")
     .then((response) => response.json())
     .then((data) => {
+      console.log("data -> ", data);
+
       const book = data[parseInt(bookIndex)];
+      console.log("book -> ", book);
       if (book) {
         document.getElementById("book-title").textContent = book.title;
         document.getElementById("book-description").textContent =
@@ -21,6 +24,9 @@ if (bookIndex !== null) {
           book.publish_date;
         document.getElementById("book-image").src = book.image;
         document.getElementById("book-image").alt = book.title;
+        document.getElementById("book-price").textContent = book.price;
+        document.getElementById("book-size").textContent = book.size;
+        document.getElementById("book-pages").textContent = book.pages;
       } else {
         document.getElementById("book-title").textContent = "Book not found";
         document.getElementById("book-description").textContent =

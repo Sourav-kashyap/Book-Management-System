@@ -1,3 +1,4 @@
+
 [
   {
     "title": "Book 1",
@@ -7,7 +8,10 @@
     "genre": "Educational",
     "year": "2020-03-24",
     "publish_date": "March 24, 2020",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvWL674MNlO0ciXJuELlt5dQ7bTuZ_FqWjVg&s"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvWL674MNlO0ciXJuELlt5dQ7bTuZ_FqWjVg&s",
+    "price": "1000",
+    "size": "10MB",
+    "pages": 500
   },
   {
     "title": "Book 2",
@@ -17,7 +21,10 @@
     "genre": "History",
     "year": "2019-12-21",
     "publish_date": "December 21, 2019",
-    "image": "https://m.media-amazon.com/images/I/81KbDfM8IZL._UF1000,1000_QL80_.jpg"
+    "image": "https://m.media-amazon.com/images/I/81KbDfM8IZL._UF1000,1000_QL80_.jpg",
+    "price": "5000",
+    "size": "20MB",
+    "pages": 500
   },
   {
     "title": "Book 3",
@@ -27,7 +34,10 @@
     "genre": "Mystery",
     "year": "2021-05-18",
     "publish_date": "May 18, 2021",
-    "image": "https://m.media-amazon.com/images/I/91ll2JzckcS._UF1000,1000_QL80_.jpg"
+    "image": "https://m.media-amazon.com/images/I/91ll2JzckcS._UF1000,1000_QL80_.jpg",
+    "price": "2000",
+    "size": "50MB",
+    "pages": 500
   },
   {
     "title": "Book 4",
@@ -37,7 +47,10 @@
     "genre": "Horror",
     "year": "2018-10-30",
     "publish_date": "October 30, 2018",
-    "image": "https://m.media-amazon.com/images/I/91tQgWThRxS._UF1000,1000_QL80_.jpg"
+    "image": "https://m.media-amazon.com/images/I/91tQgWThRxS._UF1000,1000_QL80_.jpg",
+    "price": "5500",
+    "size": "15MB",
+    "pages": 500
   },
   {
     "title": "Book 5",
@@ -47,7 +60,10 @@
     "genre": "Poetry",
     "year": "2022-04-15",
     "publish_date": "April 15, 2022",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkmoRp3CseVN7sASZbfszpWPe4K-2JiYc6UQ&s"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkmoRp3CseVN7sASZbfszpWPe4K-2JiYc6UQ&s",
+    "price": "3000",
+    "size": "5MB",
+    "pages": 500
   },
   {
     "title": "Book 6",
@@ -57,7 +73,10 @@
     "genre": "Cookbooks",
     "year": "2023-01-01",
     "publish_date": "January 1, 2023",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScB8FwF50nxUczOaNTdw5OJLra2l4yWgNVlw&s"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScB8FwF50nxUczOaNTdw5OJLra2l4yWgNVlw&s",
+    "price": "1500",
+    "size": "65MB",
+    "pages": 500
   },
   {
     "title": "Book 7",
@@ -67,7 +86,10 @@
     "genre": "Children's",
     "year": "2020-07-25",
     "publish_date": "July 25, 2020",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVue_GGMPFAKkVQB_ENX7oRIxwQoC95oG3Cw&s"
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVue_GGMPFAKkVQB_ENX7oRIxwQoC95oG3Cw&s",
+    "price": "4000",
+    "size": "10MB",
+    "pages": 500
   },
   {
     "title": "Book 8",
@@ -77,6 +99,9 @@
     "genre": "Other",
     "year": "2019-03-10",
     "publish_date": "March 10, 2019",
-    "image": "https://kids.scholastic.com/content/dam/scholastic/kids/content-cards/image/harry-potter/hp-ml-1.png"
+    "image": "https://kids.scholastic.com/content/dam/scholastic/kids/content-cards/image/harry-potter/hp-ml-1.png",
+    "price": "500",
+    "size": "10MB",
+    "pages": 500
   }
 ]

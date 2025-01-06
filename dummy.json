@@ -5,7 +5,10 @@
     "isbn": "001",
     "genre": "Educational",
     "year": "2020-03-24",
-    "age": { "y": 4, "m": 9, "d": 7 }
+    "age": { "y": 4, "m": 9, "d": 7 },
+    "price": "1000",
+    "size": "10MB",
+    "pages": 500
   },
   {
     "title": "Book 2",
@@ -13,7 +16,10 @@
     "isbn": "002",
     "genre": "History",
     "year": "2019-12-21",
-    "age": { "y": 5, "m": 0, "d": 10 }
+    "age": { "y": 5, "m": 0, "d": 10 },
+    "price": "5000",
+    "size": "20MB",
+    "pages": 500
   },
   {
     "title": "Book 3",
@@ -21,7 +27,10 @@
     "isbn": "003",
     "genre": "Mystery",
     "year": "2021-05-18",
-    "age": { "y": 3, "m": 7, "d": 13 }
+    "age": { "y": 3, "m": 7, "d": 13 },
+    "price": "2000",
+    "size": "50MB",
+    "pages": 500
   },
   {
     "title": "Book 4",
@@ -29,7 +38,10 @@
     "isbn": "004",
     "genre": "Horror",
     "year": "2018-10-30",
-    "age": { "y": 6, "m": 2, "d": 1 }
+    "age": { "y": 6, "m": 2, "d": 1 },
+    "price": "5500",
+    "size": "15MB",
+    "pages": 500
   },
   {
     "title": "Book 5",
@@ -37,7 +49,10 @@
     "isbn": "005",
     "genre": "Poetry",
     "year": "2022-04-15",
-    "age": { "y": 2, "m": 8, "d": 16 }
+    "age": { "y": 2, "m": 8, "d": 16 },
+    "price": "3000",
+    "size": "5MB",
+    "pages": 500
   },
   {
     "title": "Book 6",
@@ -45,7 +60,10 @@
     "isbn": "006",
     "genre": "Cookbooks",
     "year": "2023-01-01",
-    "age": { "y": 1, "m": 11, "d": 30 }
+    "age": { "y": 1, "m": 11, "d": 30 },
+    "price": "1500",
+    "size": "65MB",
+    "pages": 500
   },
   {
     "title": "Book 7",
@@ -53,7 +71,10 @@
     "isbn": "007",
     "genre": "Children's",
     "year": "2020-07-25",
-    "age": { "y": 4, "m": 5, "d": 6 }
+    "age": { "y": 4, "m": 5, "d": 6 },
+    "price": "4000",
+    "size": "10MB",
+    "pages": 500
   },
   {
     "title": "Book 8",
@@ -61,6 +82,9 @@
     "isbn": "008",
     "genre": "Other",
     "year": "2019-03-10",
-    "age": { "y": 5, "m": 9, "d": 21 }
+    "age": { "y": 5, "m": 9, "d": 21 },
+    "price": "500",
+    "size": "10MB",
+    "pages": 500
   }
 ]
