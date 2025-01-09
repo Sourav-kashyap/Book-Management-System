@@ -11,25 +11,26 @@ if (bookIndex !== null) {
     .then((data): void => {
       const book = data[parseInt(bookIndex)];
       if (book) {
-        (document.getElementById("book-title") as HTMLInputElement).value =
-          book.title;
+        (
+          document.getElementById("book-title") as HTMLHeadingElement
+        ).innerHTML = book.title;
 
         (
-          document.getElementById("book-description") as HTMLInputElement
-        ).value = book.description;
+          document.getElementById("book-description") as HTMLParagraphElement
+        ).innerHTML = book.description;
 
-        (document.getElementById("book-author") as HTMLInputElement).value =
-          book.author;
+        (document.getElementById("book-author") as HTMLSpanElement).innerHTML =
+          book.author.name;
 
-        (document.getElementById("book-isbn") as HTMLInputElement).value =
+        (document.getElementById("book-isbn") as HTMLSpanElement).innerHTML =
           book.isbn;
 
-        (document.getElementById("book-genre") as HTMLInputElement).value =
+        (document.getElementById("book-genre") as HTMLSpanElement).innerHTML =
           book.genre;
 
         (
-          document.getElementById("book-publish-date") as HTMLInputElement
-        ).value = book.publish_date;
+          document.getElementById("book-publish-date") as HTMLSpanElement
+        ).innerHTML = book.publish_date;
 
         (document.getElementById("book-image") as HTMLImageElement).src =
           book.image;
@@ -37,21 +38,21 @@ if (bookIndex !== null) {
         (document.getElementById("book-image") as HTMLImageElement).alt =
           book.title;
 
-        (document.getElementById("book-price") as HTMLInputElement).value =
+        (document.getElementById("book-price") as HTMLSpanElement).innerHTML =
           book.price;
 
-        (document.getElementById("book-size") as HTMLInputElement).value =
+        (document.getElementById("book-size") as HTMLSpanElement).innerHTML =
           book.size;
 
-        (document.getElementById("book-pages") as HTMLInputElement).value =
+        (document.getElementById("book-pages") as HTMLSpanElement).innerHTML =
           book.pages;
       } else {
-        (document.getElementById("book-title") as HTMLInputElement).value =
+        (document.getElementById("book-title") as HTMLSpanElement).innerHTML =
           "Book not found";
 
         (
-          document.getElementById("book-description") as HTMLInputElement
-        ).value = "No details available.";
+          document.getElementById("book-description") as HTMLParagraphElement
+        ).innerHTML = "No details available.";
 
         (document.getElementById("book-image") as HTMLImageElement).src =
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcbS_-_ReefLn6YBu1nQCO2Nnmol793vjHbye5mD0dp0Y9fklSH3sZREaB23V2dNIUF8Y&usqp=CAU";
@@ -61,16 +62,18 @@ if (bookIndex !== null) {
       }
     })
     .catch((error: Error) => {
-      (document.getElementById("book-title") as HTMLInputElement)!.value =
+      (document.getElementById("book-title") as HTMLSpanElement).innerHTML =
         "Error";
 
-      (document.getElementById("book-description") as HTMLInputElement)!.value =
-        "Could not load book details.";
+      (
+        document.getElementById("book-description") as HTMLParagraphElement
+      ).innerHTML = "Could not load book details.";
     });
 } else {
-  (document.getElementById("book-title") as HTMLInputElement).value =
+  (document.getElementById("book-title") as HTMLSpanElement).innerHTML =
     "No book selected";
 
-  (document.getElementById("book-description") as HTMLInputElement).value =
-    "Please select a book from the list.";
+  (
+    document.getElementById("book-description") as HTMLParagraphElement
+  ).innerHTML = "Please select a book from the list.";
 }

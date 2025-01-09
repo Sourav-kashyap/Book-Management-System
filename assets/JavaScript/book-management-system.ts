@@ -1,7 +1,32 @@
+interface Author {
+  name: string;
+}
+
+interface Category {
+  name: string;
+}
+
+interface Book {
+  title: string;
+  author: Author;
+  isbn: number;
+  category: Category;
+  year: string;
+  age: { y: number; m: number; d: number };
+  price: number;
+  size: string;
+  pages: number;
+  getBookAge(): string;
+}
+console.log("1");
+
 document.addEventListener("DOMContentLoaded", (): void => {
+  console.log("1");
+  
   const form: HTMLFormElement = document.getElementById(
     "bookForm"
   ) as HTMLFormElement;
+console.log("1");
 
   form.addEventListener("submit", (event): void => {
     event.preventDefault();
@@ -12,18 +37,18 @@ document.addEventListener("DOMContentLoaded", (): void => {
       document.getElementById("bookTitle") as HTMLInputElement
     ).value;
 
-    const author: string = (
-      document.getElementById("bookAuthor") as HTMLInputElement
-    ).value;
+    const author: Author = {
+      name: (document.getElementById("bookAuthor") as HTMLInputElement).value,
+    };
 
     const isbn: number = parseInt(
       (document.getElementById("bookIsbn") as HTMLInputElement).value,
       10
     );
 
-    const genre: string = (
-      document.getElementById("bookType") as HTMLInputElement
-    ).value;
+    const category: Category = {
+      name: (document.getElementById("bookType") as HTMLSelectElement).value,
+    };
 
     const year: string = (
       document.getElementById("bookPubDate") as HTMLInputElement
@@ -35,12 +60,15 @@ document.addEventListener("DOMContentLoaded", (): void => {
 
     const age: { y: number; m: number; d: number } = BaseBook.findBookAge(year);
 
-    addBook(new BaseBook(title, author, isbn, genre, year, age, price, "", 0));
+    addBook(
+      new BaseBook(title, author, isbn, category, year, age, price, "", 0)
+    );
 
-    // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
+    // addBook(new BaseBook(title, author, isbn, category, year, age, price, size, pages));
 
     form.reset();
   });
+console.log("1");
 
   fetchBooksFromApi();
 });
@@ -82,12 +110,14 @@ function validateFormData(): boolean {
   return true; // All fields are correct allow form submission.
 }
 
-class BaseBook {
+
+
+class BaseBook implements Book {
   constructor(
     public title: string,
-    public author: string,
+    public author: Author,
     public isbn: number,
-    public genre: string,
+    public category: Category,
     public year: string,
     public age: { y: number; m: number; d: number },
     public price: number,
@@ -133,13 +163,13 @@ class BaseBook {
 class EBook extends BaseBook {
   constructor(
     public title: string,
-    public author: string,
+    public author: Author,
     public isbn: number,
-    public genre: string,
+    public category: Category,
     public year: string,
     public age: { y: number; m: number; d: number }
   ) {
-    super(title, author, isbn, genre, year, age, 0, "", 0);
+    super(title, author, isbn, category, year, age, 0, "", 0);
   }
 
   calculateDiscountPrice(originalPrice: number): number {
@@ -150,13 +180,13 @@ class EBook extends BaseBook {
 class PrintedBook extends BaseBook {
   constructor(
     public title: string,
-    public author: string,
+    public author: Author,
     public isbn: number,
-    public genre: string,
+    public category: Category,
     public year: string,
     public age: { y: number; m: number; d: number }
   ) {
-    super(title, author, isbn, genre, year, age, 0, "", 0);
+    super(title, author, isbn, category, year, age, 0, "", 0);
   }
 
   calculateDiscountPrice(originalPrice: number): number {
@@ -177,6 +207,7 @@ const displayBook = (books: BaseBook[]): void => {
   ) as HTMLTableElement;
 
   tableBody.innerHTML = "";
+  // console.log(books);
 
   books.forEach((book, index): void => {
     const row: HTMLTableRowElement = document.createElement("tr");
@@ -185,10 +216,10 @@ const displayBook = (books: BaseBook[]): void => {
       "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
     row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
-      <td class="py-2 px-4">${book.author}</td>
+      <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
       <td class="py-2 px-4">${book.year}</td>
-      <td class="py-2 px-4 relative">${book.genre}
+      <td class="py-2 px-4 relative">${book.category.name}
         <button
           id="infoBtn"
           onclick="infoBook('${index}')"
@@ -217,7 +248,7 @@ const displayBook = (books: BaseBook[]): void => {
         book.title,
         book.author,
         book.isbn,
-        book.genre,
+        book.category,
         book.year,
         BaseBook.findBookAge(JSON.stringify(book.age))
       )
@@ -229,7 +260,7 @@ const displayBook = (books: BaseBook[]): void => {
         book.title,
         book.author,
         book.isbn,
-        book.genre,
+        book.category,
         book.year,
         BaseBook.findBookAge(JSON.stringify(book.age))
       )
@@ -277,13 +308,13 @@ const editBook = (isbn: number): void => {
       book.title;
 
     (document.getElementById("bookAuthor") as HTMLInputElement).value =
-      book.author;
+      book.author.name;
 
     (document.getElementById("bookIsbn") as HTMLInputElement).value =
       book.isbn.toString();
 
     (document.getElementById("bookType") as HTMLSelectElement).value =
-      book.genre.toLowerCase();
+      book.category.name.toLowerCase();
 
     (document.getElementById("bookPubDate") as HTMLInputElement).value =
       book.year.toString();
@@ -305,8 +336,10 @@ const editBook = (isbn: number): void => {
           title: (document.getElementById("bookTitle") as HTMLInputElement)
             .value,
 
-          author: (document.getElementById("bookAuthor") as HTMLInputElement)
-            .value,
+          author: {
+            name: (document.getElementById("bookAuthor") as HTMLInputElement)
+              .value,
+          },
 
           isbn: parseInt(
             (document.getElementById("bookIsbn") as HTMLInputElement).value,
@@ -316,8 +349,10 @@ const editBook = (isbn: number): void => {
           year: (document.getElementById("bookPubDate") as HTMLInputElement)
             .value,
 
-          genre: (document.getElementById("bookType") as HTMLSelectElement)
-            .value,
+          category: {
+            name: (document.getElementById("bookType") as HTMLSelectElement)
+              .value,
+          },
 
           price: parseFloat(
             (document.getElementById("bookPrice") as HTMLInputElement).value
@@ -371,7 +406,7 @@ const fetchBooksFromApi = async (): Promise<void> => {
           book.title,
           book.author,
           book.isbn,
-          book.genre.toLowerCase(),
+          { name: book.category.name.toLowerCase() },
           book.year,
           book.age,
           book.price,
@@ -386,9 +421,9 @@ const fetchBooksFromApi = async (): Promise<void> => {
   }
 };
 
-const inputGenre: HTMLInputElement = document.getElementById(
+const inputGenre: HTMLSelectElement = document.getElementById(
   "searchGenre"
-) as HTMLInputElement;
+) as HTMLSelectElement;
 
 inputGenre.addEventListener("input", async (): Promise<void> => {
   const inputValue: string = inputGenre.value.toLowerCase();
@@ -404,12 +439,12 @@ inputGenre.addEventListener("input", async (): Promise<void> => {
   }
 });
 
-const filterBooksByGenre = (genre: string): Promise<BaseBook[]> => {
+const filterBooksByGenre = (category: string): Promise<BaseBook[]> => {
   return new Promise((resolve, reject) => {
     setTimeout((): void => {
       try {
         const filteredBooks: BaseBook[] = books.filter(
-          (book) => book.genre.toLowerCase() === genre
+          (book) => book.category.name.toLowerCase() === category
         );
         resolve(filteredBooks);
       } catch (error) {

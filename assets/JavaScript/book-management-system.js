@@ -8,23 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+console.log("1");
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("1");
     const form = document.getElementById("bookForm");
+    console.log("1");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!validateFormData())
             return;
         const title = document.getElementById("bookTitle").value;
-        const author = document.getElementById("bookAuthor").value;
+        const author = {
+            name: document.getElementById("bookAuthor").value,
+        };
         const isbn = parseInt(document.getElementById("bookIsbn").value, 10);
-        const genre = document.getElementById("bookType").value;
+        const category = {
+            name: document.getElementById("bookType").value,
+        };
         const year = document.getElementById("bookPubDate").value;
         const price = parseFloat(document.getElementById("bookPrice").value);
         const age = BaseBook.findBookAge(year);
-        addBook(new BaseBook(title, author, isbn, genre, year, age, price, "", 0));
-        // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
+        addBook(new BaseBook(title, author, isbn, category, year, age, price, "", 0));
+        // addBook(new BaseBook(title, author, isbn, category, year, age, price, size, pages));
         form.reset();
     });
+    console.log("1");
     fetchBooksFromApi();
 });
 function validateFormData() {
@@ -50,11 +58,11 @@ function validateFormData() {
     return true; // All fields are correct allow form submission.
 }
 class BaseBook {
-    constructor(title, author, isbn, genre, year, age, price, size, pages) {
+    constructor(title, author, isbn, category, year, age, price, size, pages) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
-        this.genre = genre;
+        this.category = category;
         this.year = year;
         this.age = age;
         this.price = price;
@@ -86,12 +94,12 @@ class BaseBook {
     }
 }
 class EBook extends BaseBook {
-    constructor(title, author, isbn, genre, year, age) {
-        super(title, author, isbn, genre, year, age, 0, "", 0);
+    constructor(title, author, isbn, category, year, age) {
+        super(title, author, isbn, category, year, age, 0, "", 0);
         this.title = title;
         this.author = author;
         this.isbn = isbn;
-        this.genre = genre;
+        this.category = category;
         this.year = year;
         this.age = age;
     }
@@ -100,12 +108,12 @@ class EBook extends BaseBook {
     }
 }
 class PrintedBook extends BaseBook {
-    constructor(title, author, isbn, genre, year, age) {
-        super(title, author, isbn, genre, year, age, 0, "", 0);
+    constructor(title, author, isbn, category, year, age) {
+        super(title, author, isbn, category, year, age, 0, "", 0);
         this.title = title;
         this.author = author;
         this.isbn = isbn;
-        this.genre = genre;
+        this.category = category;
         this.year = year;
         this.age = age;
     }
@@ -121,16 +129,17 @@ const addBook = (book) => {
 const displayBook = (books) => {
     const tableBody = document.querySelector("#bookTable tbody");
     tableBody.innerHTML = "";
+    // console.log(books);
     books.forEach((book, index) => {
         const row = document.createElement("tr");
         row.className =
             "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
         row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
-      <td class="py-2 px-4">${book.author}</td>
+      <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
       <td class="py-2 px-4">${book.year}</td>
-      <td class="py-2 px-4 relative">${book.genre}
+      <td class="py-2 px-4 relative">${book.category.name}
         <button
           id="infoBtn"
           onclick="infoBook('${index}')"
@@ -155,12 +164,12 @@ const displayBook = (books) => {
       </td>
       <td class="text-center">${book.price}</td>
       <td class="text-center">
-      ${new EBook(book.title, book.author, book.isbn, book.genre, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
+      ${new EBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
             .calculateDiscountPrice(book.price)
             .toFixed(2)}
       </td>
       <td class="text-center">
-      ${new PrintedBook(book.title, book.author, book.isbn, book.genre, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
+      ${new PrintedBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
             .calculateDiscountPrice(book.price)
             .toFixed(2)}
       </td>
@@ -194,11 +203,11 @@ const editBook = (isbn) => {
         document.getElementById("bookTitle").value =
             book.title;
         document.getElementById("bookAuthor").value =
-            book.author;
+            book.author.name;
         document.getElementById("bookIsbn").value =
             book.isbn.toString();
         document.getElementById("bookType").value =
-            book.genre.toLowerCase();
+            book.category.name.toLowerCase();
         document.getElementById("bookPubDate").value =
             book.year.toString();
         document.getElementById("bookPrice").value =
@@ -212,13 +221,17 @@ const editBook = (isbn) => {
                 const updatedData = {
                     title: document.getElementById("bookTitle")
                         .value,
-                    author: document.getElementById("bookAuthor")
-                        .value,
+                    author: {
+                        name: document.getElementById("bookAuthor")
+                            .value,
+                    },
                     isbn: parseInt(document.getElementById("bookIsbn").value, 10),
                     year: document.getElementById("bookPubDate")
                         .value,
-                    genre: document.getElementById("bookType")
-                        .value,
+                    category: {
+                        name: document.getElementById("bookType")
+                            .value,
+                    },
                     price: parseFloat(document.getElementById("bookPrice").value),
                     age: BaseBook.findBookAge(document.getElementById("bookPubDate").value),
                 };
@@ -255,7 +268,7 @@ const fetchBooksFromApi = () => __awaiter(void 0, void 0, void 0, function* () {
         if (!response.ok)
             throw new Error("Failed to fetch books");
         const data = yield response.json();
-        const fetchBooks = data.map((book) => new BaseBook(book.title, book.author, book.isbn, book.genre.toLowerCase(), book.year, book.age, book.price, book.size, book.pages));
+        const fetchBooks = data.map((book) => new BaseBook(book.title, book.author, book.isbn, { name: book.category.name.toLowerCase() }, book.year, book.age, book.price, book.size, book.pages));
         books = [...books, ...fetchBooks];
         displayBook(books);
     }
@@ -279,11 +292,11 @@ inputGenre.addEventListener("input", () => __awaiter(void 0, void 0, void 0, fun
         console.error("Error filtering books by genre:", error);
     }
 }));
-const filterBooksByGenre = (genre) => {
+const filterBooksByGenre = (category) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             try {
-                const filteredBooks = books.filter((book) => book.genre.toLowerCase() === genre);
+                const filteredBooks = books.filter((book) => book.category.name.toLowerCase() === category);
                 resolve(filteredBooks);
             }
             catch (error) {
