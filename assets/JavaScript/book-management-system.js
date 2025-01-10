@@ -8,11 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-console.log("1");
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("1");
     const form = document.getElementById("bookForm");
-    console.log("1");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!validateFormData())
@@ -29,10 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const price = parseFloat(document.getElementById("bookPrice").value);
         const age = BaseBook.findBookAge(year);
         addBook(new BaseBook(title, author, isbn, category, year, age, price, "", 0));
-        // addBook(new BaseBook(title, author, isbn, category, year, age, price, size, pages));
+        // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
         form.reset();
     });
-    console.log("1");
     fetchBooksFromApi();
 });
 function validateFormData() {
@@ -74,23 +70,30 @@ class BaseBook {
     }
     static findBookAge(year) {
         const currDate = new Date();
-        const bookDate = new Date(year);
-        let diffYear = currDate.getFullYear() - bookDate.getFullYear();
-        let diffMonth = currDate.getMonth() - bookDate.getMonth();
-        let diffDay = currDate.getDate() - bookDate.getDate();
-        if (diffDay < 0) {
-            diffMonth -= 1;
-            diffDay += new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate();
+        if (typeof year === "string") {
+            // Handle the case where year is a string
+            const bookDate = new Date(year);
+            let diffYear = currDate.getFullYear() - bookDate.getFullYear();
+            let diffMonth = currDate.getMonth() - bookDate.getMonth();
+            let diffDay = currDate.getDate() - bookDate.getDate();
+            if (diffDay < 0) {
+                diffMonth -= 1;
+                diffDay += new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate();
+            }
+            if (diffMonth < 0) {
+                diffYear -= 1;
+                diffMonth += 12;
+            }
+            if (diffMonth >= 12) {
+                diffYear += Math.floor(diffMonth / 12);
+                diffMonth %= 12;
+            }
+            return { y: diffYear, m: diffMonth, d: diffDay };
         }
-        if (diffMonth < 0) {
-            diffYear -= 1;
-            diffMonth += 12;
+        else {
+            console.log(`Year ${year} is not a string`);
         }
-        if (diffMonth >= 12) {
-            diffYear += Math.floor(diffMonth / 12);
-            diffMonth %= 12;
-        }
-        return { y: diffYear, m: diffMonth, d: diffDay };
+        return { y: 0, m: 0, d: 0 };
     }
 }
 class EBook extends BaseBook {
@@ -104,7 +107,12 @@ class EBook extends BaseBook {
         this.age = age;
     }
     calculateDiscountPrice(originalPrice) {
-        return originalPrice * 0.8; // 20% discount for eBooks
+        if (typeof originalPrice === "number")
+            return (originalPrice * 0.8); // 20% discount for Ebooks
+        else {
+            console.log(`originalPrice ${originalPrice} is not a number`);
+            return 0;
+        }
     }
 }
 class PrintedBook extends BaseBook {
@@ -118,23 +126,33 @@ class PrintedBook extends BaseBook {
         this.age = age;
     }
     calculateDiscountPrice(originalPrice) {
-        return originalPrice * 0.9; // 10% discount for printed books
+        if (typeof originalPrice === "number")
+            return (originalPrice * 0.9); // 10% discount for printed books
+        else {
+            console.log(`originalPrice ${originalPrice} is not a number`);
+            return 0;
+        }
     }
 }
 let books = [];
 const addBook = (book) => {
-    books.push(book);
-    displayBook(books);
+    if (book instanceof BaseBook) {
+        books.push(book);
+        displayBook(books);
+    }
+    else {
+        console.error("Invalid book type. Only BaseBook or its subclasses are allowed.");
+    }
 };
 const displayBook = (books) => {
     const tableBody = document.querySelector("#bookTable tbody");
     tableBody.innerHTML = "";
-    // console.log(books);
     books.forEach((book, index) => {
-        const row = document.createElement("tr");
-        row.className =
-            "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-        row.innerHTML = `
+        if (book instanceof BaseBook) {
+            const row = document.createElement("tr");
+            row.className =
+                "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+            row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -165,16 +183,20 @@ const displayBook = (books) => {
       <td class="text-center">${book.price}</td>
       <td class="text-center">
       ${new EBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-            .calculateDiscountPrice(book.price)
-            .toFixed(2)}
+                .calculateDiscountPrice(Number(book.price))
+                .toFixed(2)}
       </td>
       <td class="text-center">
       ${new PrintedBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-            .calculateDiscountPrice(book.price)
-            .toFixed(2)}
+                .calculateDiscountPrice(Number(book.price))
+                .toFixed(2)}
       </td>
-    `;
-        tableBody.appendChild(row);
+     `;
+            tableBody.appendChild(row);
+        }
+        else {
+            console.error(`Invalid book detected at index ${index}`);
+        }
     });
 };
 /*
@@ -183,12 +205,17 @@ const displayBook = (books) => {
   any or all of those properties are optional.
 */
 const updateBook = (isbn, updatedData) => {
-    var _a;
     const bookIndex = books.findIndex((book) => book.isbn === isbn);
     if (bookIndex !== -1) {
-        const updatedBook = Object.assign(Object.assign(Object.assign({}, books[bookIndex]), updatedData), { getBookAge: (_a = updatedData.getBookAge) !== null && _a !== void 0 ? _a : books[bookIndex].getBookAge });
+        // Ensure that getBookAge is not lost during update
+        const updatedBook = Object.assign(Object.assign(Object.assign({}, books[bookIndex]), updatedData), { 
+            // Only overwrite getBookAge if it's provided in updatedData
+            getBookAge: updatedData.getBookAge || books[bookIndex].getBookAge });
+        // Update the book in the array
         books[bookIndex] = updatedBook;
+        // Re-render the book list
         displayBook(books);
+        // Reset the form
         const form = document.getElementById("bookForm");
         form.reset();
     }
@@ -233,7 +260,7 @@ const editBook = (isbn) => {
                             .value,
                     },
                     price: parseFloat(document.getElementById("bookPrice").value),
-                    age: BaseBook.findBookAge(document.getElementById("bookPubDate").value),
+                    age: BaseBook.findBookAge((document.getElementById("bookPubDate").value)),
                 };
                 /*
                 the updatedData object you are passing does not fully match the
@@ -293,17 +320,22 @@ inputGenre.addEventListener("input", () => __awaiter(void 0, void 0, void 0, fun
     }
 }));
 const filterBooksByGenre = (category) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            try {
-                const filteredBooks = books.filter((book) => book.category.name.toLowerCase() === category);
-                resolve(filteredBooks);
-            }
-            catch (error) {
-                reject(error);
-            }
+    if (typeof category === "string") {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    const filteredBooks = books.filter((book) => book.category.name.toLowerCase() === category);
+                    resolve(filteredBooks);
+                }
+                catch (error) {
+                    reject(error);
+                }
+            });
         });
-    });
+    }
+    else {
+        return Promise.reject(new Error(`Category type ${typeof category} is not a string`));
+    }
 };
 /*
   Flag to toggle between ascending and descending order

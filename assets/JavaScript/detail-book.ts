@@ -1,9 +1,13 @@
-function getQueryParameter(bookIndex: string): string | null {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(bookIndex);
+function getQueryParameter<T>(bookIndex: T): T | null {
+  if (typeof bookIndex === "string") {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(bookIndex) as T;
+  } else {
+    return null;
+  }
 }
 
-const bookIndex: string | null = getQueryParameter("index");
+const bookIndex: string | null = getQueryParameter<string>("index");
 
 if (bookIndex !== null) {
   fetch("../../dummyBooksDetails.json")
@@ -70,6 +74,7 @@ if (bookIndex !== null) {
       ).innerHTML = "Could not load book details.";
     });
 } else {
+  console.log(`BookIndex ${bookIndex} is not a string`);
   (document.getElementById("book-title") as HTMLSpanElement).innerHTML =
     "No book selected";
 

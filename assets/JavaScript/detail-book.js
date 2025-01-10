@@ -1,7 +1,12 @@
 "use strict";
 function getQueryParameter(bookIndex) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(bookIndex);
+    if (typeof bookIndex === "string") {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(bookIndex);
+    }
+    else {
+        return null;
+    }
 }
 const bookIndex = getQueryParameter("index");
 if (bookIndex !== null) {
@@ -47,6 +52,7 @@ if (bookIndex !== null) {
     });
 }
 else {
+    console.log(`BookIndex ${bookIndex} is not a string`);
     document.getElementById("book-title").innerHTML =
         "No book selected";
     document.getElementById("book-description").innerHTML = "Please select a book from the list.";
