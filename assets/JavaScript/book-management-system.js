@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("bookForm");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!validateFormData())
-            return;
         const title = document.getElementById("bookTitle").value;
         const author = {
             name: document.getElementById("bookAuthor").value,
         };
         const isbn = parseInt(document.getElementById("bookIsbn").value, 10);
+        if (!validateFormData(title, author, isbn))
+            return;
         const category = {
             name: document.getElementById("bookType").value,
         };
@@ -26,15 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const price = parseFloat(document.getElementById("bookPrice").value);
         const age = BaseBook.findBookAge(year);
         addBook(new BaseBook(title, author, isbn, category, year, age, price, "", 0));
-        // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
         form.reset();
     });
     fetchBooksFromApi();
 });
-function validateFormData() {
-    const title = document.getElementById("bookTitle").value;
-    const author = document.getElementById("bookAuthor").value;
-    const isbn = parseInt(document.getElementById("bookIsbn").value, 10);
+function validateFormData(title, author, isbn) {
     if (!title) {
         alert("Title fields must be requried");
         return false; // Something is wrong prevent form submission.
@@ -144,15 +140,11 @@ const addBook = (book) => {
         console.error("Invalid book type. Only BaseBook or its subclasses are allowed.");
     }
 };
-const displayBook = (books) => {
-    const tableBody = document.querySelector("#bookTable tbody");
-    tableBody.innerHTML = "";
-    books.forEach((book, index) => {
-        if (book instanceof BaseBook) {
-            const row = document.createElement("tr");
-            row.className =
-                "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-            row.innerHTML = `
+function createBookTableRow(book, index) {
+    const row = document.createElement("tr");
+    row.className =
+        "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+    row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -183,16 +175,23 @@ const displayBook = (books) => {
       <td class="text-center">${book.price}</td>
       <td class="text-center">
       ${new EBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-                .calculateDiscountPrice(Number(book.price))
-                .toFixed(2)}
+        .calculateDiscountPrice(Number(book.price))
+        .toFixed(2)}
       </td>
       <td class="text-center">
       ${new PrintedBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-                .calculateDiscountPrice(Number(book.price))
-                .toFixed(2)}
+        .calculateDiscountPrice(Number(book.price))
+        .toFixed(2)}
       </td>
      `;
-            tableBody.appendChild(row);
+    return row;
+}
+const displayBook = (books) => {
+    const tableBody = document.querySelector("#bookTable tbody");
+    tableBody.innerHTML = "";
+    books.forEach((book, index) => {
+        if (book instanceof BaseBook) {
+            tableBody.appendChild(createBookTableRow(book, index));
         }
         else {
             console.error(`Invalid book detected at index ${index}`);
@@ -213,9 +212,7 @@ const updateBook = (isbn, updatedData) => {
             getBookAge: updatedData.getBookAge || books[bookIndex].getBookAge });
         // Update the book in the array
         books[bookIndex] = updatedBook;
-        // Re-render the book list
         displayBook(books);
-        // Reset the form
         const form = document.getElementById("bookForm");
         form.reset();
     }
@@ -223,56 +220,46 @@ const updateBook = (isbn, updatedData) => {
         console.log(`Book with ISBN ${isbn} not found`);
     }
 };
+function setFieldWithCurrentValues(book) {
+    document.getElementById("bookTitle").value = book.title;
+    document.getElementById("bookAuthor").value =
+        book.author.name;
+    document.getElementById("bookIsbn").value =
+        book.isbn.toString();
+    document.getElementById("bookType").value =
+        book.category.name.toLowerCase();
+    document.getElementById("bookPubDate").value =
+        book.year.toString();
+    document.getElementById("bookPrice").value =
+        book.price.toString();
+}
+function setFieldWithUpdateValues() {
+    return {
+        title: document.getElementById("bookTitle").value,
+        author: {
+            name: document.getElementById("bookAuthor").value,
+        },
+        isbn: parseInt(document.getElementById("bookIsbn").value, 10),
+        year: document.getElementById("bookPubDate").value,
+        category: {
+            name: document.getElementById("bookType").value,
+        },
+        price: parseFloat(document.getElementById("bookPrice").value),
+        age: BaseBook.findBookAge(document.getElementById("bookPubDate").value),
+    };
+}
 const editBook = (isbn) => {
     const book = books.find((book) => book.isbn === isbn);
     if (book) {
-        // Set the form fields with the current values of the book
-        document.getElementById("bookTitle").value =
-            book.title;
-        document.getElementById("bookAuthor").value =
-            book.author.name;
-        document.getElementById("bookIsbn").value =
-            book.isbn.toString();
-        document.getElementById("bookType").value =
-            book.category.name.toLowerCase();
-        document.getElementById("bookPubDate").value =
-            book.year.toString();
-        document.getElementById("bookPrice").value =
-            book.price.toString();
-        // Listen for form submission
+        setFieldWithCurrentValues(book);
         document.addEventListener("DOMContentLoaded", () => {
             const form = document.getElementById("bookForm");
             form.onsubmit = (event) => {
                 event.preventDefault();
-                // Collect updated data from the form
-                const updatedData = {
-                    title: document.getElementById("bookTitle")
-                        .value,
-                    author: {
-                        name: document.getElementById("bookAuthor")
-                            .value,
-                    },
-                    isbn: parseInt(document.getElementById("bookIsbn").value, 10),
-                    year: document.getElementById("bookPubDate")
-                        .value,
-                    category: {
-                        name: document.getElementById("bookType")
-                            .value,
-                    },
-                    price: parseFloat(document.getElementById("bookPrice").value),
-                    age: BaseBook.findBookAge((document.getElementById("bookPubDate").value)),
-                };
-                /*
-                the updatedData object you are passing does not fully match the
-                BaseBook type. Specifically, the BaseBook type has additional required
-                properties like age, size, pages, and getBookAge, which are missing in
-                your updatedData.
-                */
-                // Update the book data
+                const updatedData = setFieldWithUpdateValues();
                 updateBook(isbn, updatedData);
             };
         });
-        // Optionally delete the book after editing, based on your logic
         deleteBook(isbn);
     }
     else {
@@ -337,11 +324,6 @@ const filterBooksByGenre = (category) => {
         return Promise.reject(new Error(`Category type ${typeof category} is not a string`));
     }
 };
-/*
-  Flag to toggle between ascending and descending order
-  true -> ascending
-  false -> descending
-*/
 const sortBooks = (sortBy) => {
     books.sort((a, b) => {
         const ageA = a.age.y * 365 + a.age.m * 30 + a.age.d;

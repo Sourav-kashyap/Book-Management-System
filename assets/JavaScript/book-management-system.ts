@@ -27,8 +27,6 @@ document.addEventListener("DOMContentLoaded", (): void => {
   form.addEventListener("submit", (event): void => {
     event.preventDefault();
 
-    if (!validateFormData()) return;
-
     const title: string = (
       document.getElementById("bookTitle") as HTMLInputElement
     ).value;
@@ -41,6 +39,8 @@ document.addEventListener("DOMContentLoaded", (): void => {
       (document.getElementById("bookIsbn") as HTMLInputElement).value,
       10
     );
+
+    if (!validateFormData(title, author, isbn)) return;
 
     const category: Category = {
       name: (document.getElementById("bookType") as HTMLSelectElement).value,
@@ -61,28 +61,17 @@ document.addEventListener("DOMContentLoaded", (): void => {
       new BaseBook(title, author, isbn, category, year, age, price, "", 0)
     );
 
-    // addBook(new BaseBook(title, author, isbn, genre, year, age, price, size, pages));
-
     form.reset();
   });
 
   fetchBooksFromApi();
 });
 
-function validateFormData(): boolean {
-  const title: string = (
-    document.getElementById("bookTitle") as HTMLInputElement
-  ).value;
-
-  const author: string = (
-    document.getElementById("bookAuthor") as HTMLInputElement
-  ).value;
-
-  const isbn: number = parseInt(
-    (document.getElementById("bookIsbn") as HTMLInputElement).value,
-    10
-  );
-
+function validateFormData(
+  title: string,
+  author: Author,
+  isbn: number
+): boolean {
   if (!title) {
     alert("Title fields must be requried");
     return false; // Something is wrong prevent form submission.
@@ -216,20 +205,14 @@ const addBook = <T>(book: T): void => {
   }
 };
 
-const displayBook = <T>(books: T[]): void => {
-  const tableBody: HTMLTableElement = document.querySelector(
-    "#bookTable tbody"
-  ) as HTMLTableElement;
-
-  tableBody.innerHTML = "";
-
-  books.forEach((book, index): void => {
-    if (book instanceof BaseBook) {
-      const row: HTMLTableRowElement = document.createElement("tr");
-
-      row.className =
-        "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-      row.innerHTML = `
+function createBookTableRow(
+  book: BaseBook,
+  index: number
+): HTMLTableRowElement {
+  const row: HTMLTableRowElement = document.createElement("tr");
+  row.className =
+    "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+  row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -283,7 +266,17 @@ const displayBook = <T>(books: T[]): void => {
         .toFixed(2)}
       </td>
      `;
-      tableBody.appendChild(row);
+  return row;
+}
+
+const displayBook = <T>(books: T[]): void => {
+  const tableBody: HTMLTableElement = document.querySelector(
+    "#bookTable tbody"
+  ) as HTMLTableElement;
+  tableBody.innerHTML = "";
+  books.forEach((book, index): void => {
+    if (book instanceof BaseBook) {
+      tableBody.appendChild(createBookTableRow(book, index));
     } else {
       console.error(`Invalid book detected at index ${index}`);
     }
@@ -304,17 +297,15 @@ const updateBook = (isbn: number, updatedData: Partial<BaseBook>): void => {
     const updatedBook: BaseBook = {
       ...books[bookIndex],
       ...updatedData,
+
       // Only overwrite getBookAge if it's provided in updatedData
       getBookAge: updatedData.getBookAge || books[bookIndex].getBookAge,
     };
 
     // Update the book in the array
     books[bookIndex] = updatedBook;
-
-    // Re-render the book list
     displayBook<BaseBook>(books);
 
-    // Reset the form
     const form: HTMLFormElement = document.getElementById(
       "bookForm"
     ) as HTMLFormElement;
@@ -324,85 +315,69 @@ const updateBook = (isbn: number, updatedData: Partial<BaseBook>): void => {
   }
 };
 
+function setFieldWithCurrentValues(book: BaseBook) {
+  (document.getElementById("bookTitle") as HTMLInputElement).value = book.title;
+
+  (document.getElementById("bookAuthor") as HTMLInputElement).value =
+    book.author.name;
+
+  (document.getElementById("bookIsbn") as HTMLInputElement).value =
+    book.isbn.toString();
+
+  (document.getElementById("bookType") as HTMLSelectElement).value =
+    book.category.name.toLowerCase();
+
+  (document.getElementById("bookPubDate") as HTMLInputElement).value =
+    book.year.toString();
+
+  (document.getElementById("bookPrice") as HTMLInputElement).value =
+    book.price.toString();
+}
+
+function setFieldWithUpdateValues() {
+  return {
+    title: (document.getElementById("bookTitle") as HTMLInputElement).value,
+
+    author: {
+      name: (document.getElementById("bookAuthor") as HTMLInputElement).value,
+    },
+
+    isbn: parseInt(
+      (document.getElementById("bookIsbn") as HTMLInputElement).value,
+      10
+    ),
+
+    year: (document.getElementById("bookPubDate") as HTMLInputElement).value,
+
+    category: {
+      name: (document.getElementById("bookType") as HTMLSelectElement).value,
+    },
+
+    price: parseFloat(
+      (document.getElementById("bookPrice") as HTMLInputElement).value
+    ),
+
+    age: BaseBook.findBookAge(
+      <string>(document.getElementById("bookPubDate") as HTMLInputElement).value
+    ),
+  };
+}
+
 const editBook = (isbn: number): void => {
   const book: BaseBook | undefined = books.find((book) => book.isbn === isbn);
 
   if (book) {
-    // Set the form fields with the current values of the book
-    (document.getElementById("bookTitle") as HTMLInputElement).value =
-      book.title;
-
-    (document.getElementById("bookAuthor") as HTMLInputElement).value =
-      book.author.name;
-
-    (document.getElementById("bookIsbn") as HTMLInputElement).value =
-      book.isbn.toString();
-
-    (document.getElementById("bookType") as HTMLSelectElement).value =
-      book.category.name.toLowerCase();
-
-    (document.getElementById("bookPubDate") as HTMLInputElement).value =
-      book.year.toString();
-
-    (document.getElementById("bookPrice") as HTMLInputElement).value =
-      book.price.toString();
-
-    // Listen for form submission
+    setFieldWithCurrentValues(book);
     document.addEventListener("DOMContentLoaded", (): void => {
       const form: HTMLFormElement = document.getElementById(
         "bookForm"
       ) as HTMLFormElement;
-
       form.onsubmit = (event: Event): void => {
         event.preventDefault();
-
-        // Collect updated data from the form
-        const updatedData: Partial<BaseBook> = {
-          title: (document.getElementById("bookTitle") as HTMLInputElement)
-            .value,
-
-          author: {
-            name: (document.getElementById("bookAuthor") as HTMLInputElement)
-              .value,
-          },
-
-          isbn: parseInt(
-            (document.getElementById("bookIsbn") as HTMLInputElement).value,
-            10
-          ),
-
-          year: (document.getElementById("bookPubDate") as HTMLInputElement)
-            .value,
-
-          category: {
-            name: (document.getElementById("bookType") as HTMLSelectElement)
-              .value,
-          },
-
-          price: parseFloat(
-            (document.getElementById("bookPrice") as HTMLInputElement).value
-          ),
-
-          age: BaseBook.findBookAge(
-            <string>(
-              (document.getElementById("bookPubDate") as HTMLInputElement).value
-            )
-          ),
-        };
-
-        /*
-        the updatedData object you are passing does not fully match the
-        BaseBook type. Specifically, the BaseBook type has additional required
-        properties like age, size, pages, and getBookAge, which are missing in
-        your updatedData.
-        */
-
-        // Update the book data
+        const updatedData: Partial<BaseBook> = setFieldWithUpdateValues();
         updateBook(isbn, updatedData);
       };
     });
-
-    // Optionally delete the book after editing, based on your logic
     deleteBook(isbn);
   } else {
     console.log(`Book with ISBN ${isbn} not found`);
@@ -422,11 +397,8 @@ const deleteBook = (isbn: number): void => {
 const fetchBooksFromApi = async (): Promise<void> => {
   try {
     const response = await fetch("../../dummy.json");
-
     if (!response.ok) throw new Error("Failed to fetch books");
-
     const data: BaseBook[] = await response.json();
-
     const fetchBooks: BaseBook[] = data.map(
       (book) =>
         new BaseBook(
@@ -488,12 +460,6 @@ const filterBooksByGenre = <T>(category: T): Promise<BaseBook[]> => {
     );
   }
 };
-
-/*
-  Flag to toggle between ascending and descending order
-  true -> ascending
-  false -> descending
-*/
 
 const sortBooks = <T>(sortBy: T): void => {
   books.sort((a, b): number => {
