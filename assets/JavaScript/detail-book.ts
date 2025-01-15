@@ -1,4 +1,4 @@
-function getQueryParameter<T>(bookIndex: T): T | null {
+const getQueryParameter = <T>(bookIndex: T): T | null => {
   if (typeof bookIndex === "string") {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(bookIndex) as T;

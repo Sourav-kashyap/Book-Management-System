@@ -1,5 +1,5 @@
 "use strict";
-function getQueryParameter(bookIndex) {
+const getQueryParameter = (bookIndex) => {
     if (typeof bookIndex === "string") {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(bookIndex);
@@ -7,7 +7,7 @@ function getQueryParameter(bookIndex) {
     else {
         return null;
     }
-}
+};
 const bookIndex = getQueryParameter("index");
 if (bookIndex !== null) {
     fetch("../../dummyBooksDetails.json")

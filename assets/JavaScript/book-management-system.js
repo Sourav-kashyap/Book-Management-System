@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+/* --------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("bookForm");
     form.addEventListener("submit", (event) => {
@@ -30,25 +31,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     fetchBooksFromApi();
 });
-function validateFormData(title, author, isbn) {
-    if (!title) {
-        alert("Title fields must be requried");
-        return false; // Something is wrong prevent form submission.
+/* --------------------------------------------------------------------- */
+const validateFormData = (title, author, isbn) => {
+    if (typeof title === "string" &&
+        typeof author === "object" &&
+        typeof isbn === "number") {
+        if (!title) {
+            alert("Title fields must be requried");
+            return false; // Something is wrong prevent form submission.
+        }
+        if (!author) {
+            alert("Author fields must be requried");
+            return false; // Something is wrong prevent form submission.
+        }
+        if (isNaN(isbn)) {
+            alert("ISBN must be a number");
+            return false; // Something is wrong prevent form submission.
+        }
     }
-    if (!author) {
-        alert("Author fields must be requried");
-        return false; // Something is wrong prevent form submission.
-    }
-    if (!isbn) {
-        alert("ISBN fields must be requried");
-        return false; // Something is wrong prevent form submission.
-    }
-    if (isNaN(isbn)) {
-        alert("ISBN must be a number");
-        return false; // Something is wrong prevent form submission.
+    else {
+        console.log("Invalid form data. Please check your inputs.");
+        return false;
     }
     return true; // All fields are correct allow form submission.
-}
+};
+/* --------------------------------------------------------------------- */
 class BaseBook {
     constructor(title, author, isbn, category, year, age, price, size, pages) {
         this.title = title;
@@ -92,6 +99,7 @@ class BaseBook {
         return { y: 0, m: 0, d: 0 };
     }
 }
+/* --------------------------------------------------------------------- */
 class EBook extends BaseBook {
     constructor(title, author, isbn, category, year, age) {
         super(title, author, isbn, category, year, age, 0, "", 0);
@@ -111,6 +119,7 @@ class EBook extends BaseBook {
         }
     }
 }
+/* --------------------------------------------------------------------- */
 class PrintedBook extends BaseBook {
     constructor(title, author, isbn, category, year, age) {
         super(title, author, isbn, category, year, age, 0, "", 0);
@@ -130,7 +139,9 @@ class PrintedBook extends BaseBook {
         }
     }
 }
+/* --------------------------------------------------------------------- */
 let books = [];
+/* --------------------------------------------------------------------- */
 const addBook = (book) => {
     if (book instanceof BaseBook) {
         books.push(book);
@@ -140,11 +151,13 @@ const addBook = (book) => {
         console.error("Invalid book type. Only BaseBook or its subclasses are allowed.");
     }
 };
-function createBookTableRow(book, index) {
+/* --------------------------------------------------------------------- */
+const createBookTableRow = (book, index) => {
     const row = document.createElement("tr");
-    row.className =
-        "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-    row.innerHTML = `
+    if (book instanceof BaseBook) {
+        row.className =
+            "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+        row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -175,17 +188,22 @@ function createBookTableRow(book, index) {
       <td class="text-center">${book.price}</td>
       <td class="text-center">
       ${new EBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-        .calculateDiscountPrice(Number(book.price))
-        .toFixed(2)}
+            .calculateDiscountPrice(Number(book.price))
+            .toFixed(2)}
       </td>
       <td class="text-center">
       ${new PrintedBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-        .calculateDiscountPrice(Number(book.price))
-        .toFixed(2)}
+            .calculateDiscountPrice(Number(book.price))
+            .toFixed(2)}
       </td>
      `;
+    }
+    else {
+        console.error("Invalid book type. Expected a BaseBook instance.");
+    }
     return row;
-}
+};
+/* --------------------------------------------------------------------- */
 const displayBook = (books) => {
     const tableBody = document.querySelector("#bookTable tbody");
     tableBody.innerHTML = "";
@@ -198,6 +216,7 @@ const displayBook = (books) => {
         }
     });
 };
+/* --------------------------------------------------------------------- */
 /*
   BaseBook is a type that has a set of properties, like title, author, year, etc.
   When you use Partial<BaseBook>, it means that you can create an object where
@@ -220,20 +239,28 @@ const updateBook = (isbn, updatedData) => {
         console.log(`Book with ISBN ${isbn} not found`);
     }
 };
-function setFieldWithCurrentValues(book) {
-    document.getElementById("bookTitle").value = book.title;
-    document.getElementById("bookAuthor").value =
-        book.author.name;
-    document.getElementById("bookIsbn").value =
-        book.isbn.toString();
-    document.getElementById("bookType").value =
-        book.category.name.toLowerCase();
-    document.getElementById("bookPubDate").value =
-        book.year.toString();
-    document.getElementById("bookPrice").value =
-        book.price.toString();
-}
-function setFieldWithUpdateValues() {
+/* --------------------------------------------------------------------- */
+const setFieldWithCurrentValues = (book) => {
+    if (book instanceof BaseBook) {
+        document.getElementById("bookTitle").value =
+            book.title;
+        document.getElementById("bookAuthor").value =
+            book.author.name;
+        document.getElementById("bookIsbn").value =
+            book.isbn.toString();
+        document.getElementById("bookType").value =
+            book.category.name.toLowerCase();
+        document.getElementById("bookPubDate").value =
+            book.year.toString();
+        document.getElementById("bookPrice").value =
+            book.price.toString();
+    }
+    else {
+        console.error("Invalid book type. Expected a BaseBook instance.");
+    }
+};
+/* --------------------------------------------------------------------- */
+const setFieldWithUpdateValues = () => {
     return {
         title: document.getElementById("bookTitle").value,
         author: {
@@ -247,7 +274,8 @@ function setFieldWithUpdateValues() {
         price: parseFloat(document.getElementById("bookPrice").value),
         age: BaseBook.findBookAge(document.getElementById("bookPubDate").value),
     };
-}
+};
+/* --------------------------------------------------------------------- */
 const editBook = (isbn) => {
     const book = books.find((book) => book.isbn === isbn);
     if (book) {
@@ -266,6 +294,7 @@ const editBook = (isbn) => {
         console.log(`Book with ISBN ${isbn} not found`);
     }
 };
+/* --------------------------------------------------------------------- */
 const deleteBook = (isbn) => {
     const removeBookIndex = books.findIndex((book) => book.isbn === isbn);
     if (removeBookIndex !== -1) {
@@ -276,6 +305,7 @@ const deleteBook = (isbn) => {
         console.log(`Book with ISBN ${isbn} not found`);
     }
 };
+/* --------------------------------------------------------------------- */
 const fetchBooksFromApi = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield fetch("../../dummy.json");
@@ -290,6 +320,7 @@ const fetchBooksFromApi = () => __awaiter(void 0, void 0, void 0, function* () {
         alert(`Error: ${error.message}`);
     }
 });
+/* --------------------------------------------------------------------- */
 const inputGenre = document.getElementById("searchGenre");
 inputGenre.addEventListener("input", () => __awaiter(void 0, void 0, void 0, function* () {
     const inputValue = inputGenre.value.toLowerCase();
@@ -306,6 +337,7 @@ inputGenre.addEventListener("input", () => __awaiter(void 0, void 0, void 0, fun
         console.error("Error filtering books by genre:", error);
     }
 }));
+/* --------------------------------------------------------------------- */
 const filterBooksByGenre = (category) => {
     if (typeof category === "string") {
         return new Promise((resolve, reject) => {
@@ -324,6 +356,7 @@ const filterBooksByGenre = (category) => {
         return Promise.reject(new Error(`Category type ${typeof category} is not a string`));
     }
 };
+/* --------------------------------------------------------------------- */
 const sortBooks = (sortBy) => {
     books.sort((a, b) => {
         const ageA = a.age.y * 365 + a.age.m * 30 + a.age.d;
@@ -332,6 +365,7 @@ const sortBooks = (sortBy) => {
     });
     displayBook(books);
 };
+/* --------------------------------------------------------------------- */
 const handleSortChange = (value) => {
     if (value === "ascending") {
         sortBooks(true);
@@ -340,6 +374,7 @@ const handleSortChange = (value) => {
         sortBooks(false);
     }
 };
-function infoBook(bookIndex) {
+/* --------------------------------------------------------------------- */
+const infoBook = (bookIndex) => {
     window.location.href = `detail-book.html?index=${bookIndex}`;
-}
+};

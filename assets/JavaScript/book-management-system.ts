@@ -2,9 +2,13 @@ interface Author {
   name: string;
 }
 
+/* --------------------------------------------------------------------- */
+
 interface Category {
   name: string;
 }
+
+/* --------------------------------------------------------------------- */
 
 interface Book {
   title: string;
@@ -18,6 +22,8 @@ interface Book {
   pages: number;
   getBookAge(): string;
 }
+
+/* --------------------------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", (): void => {
   const form: HTMLFormElement = document.getElementById(
@@ -40,7 +46,7 @@ document.addEventListener("DOMContentLoaded", (): void => {
       10
     );
 
-    if (!validateFormData(title, author, isbn)) return;
+    if (!validateFormData<string, Author, number>(title, author, isbn)) return;
 
     const category: Category = {
       name: (document.getElementById("bookType") as HTMLSelectElement).value,
@@ -67,33 +73,35 @@ document.addEventListener("DOMContentLoaded", (): void => {
   fetchBooksFromApi();
 });
 
-function validateFormData(
-  title: string,
-  author: Author,
-  isbn: number
-): boolean {
-  if (!title) {
-    alert("Title fields must be requried");
-    return false; // Something is wrong prevent form submission.
-  }
+/* --------------------------------------------------------------------- */
 
-  if (!author) {
-    alert("Author fields must be requried");
-    return false; // Something is wrong prevent form submission.
-  }
+const validateFormData = <T, A, N>(title: T, author: A, isbn: N): boolean => {
+  if (
+    typeof title === "string" &&
+    typeof author === "object" &&
+    typeof isbn === "number"
+  ) {
+    if (!title) {
+      alert("Title fields must be requried");
+      return false; // Something is wrong prevent form submission.
+    }
+    if (!author) {
+      alert("Author fields must be requried");
+      return false; // Something is wrong prevent form submission.
+    }
 
-  if (!isbn) {
-    alert("ISBN fields must be requried");
-    return false; // Something is wrong prevent form submission.
+    if (isNaN(isbn)) {
+      alert("ISBN must be a number");
+      return false; // Something is wrong prevent form submission.
+    }
+  } else {
+    console.log("Invalid form data. Please check your inputs.");
+    return false;
   }
-
-  if (isNaN(isbn)) {
-    alert("ISBN must be a number");
-    return false; // Something is wrong prevent form submission.
-  }
-
   return true; // All fields are correct allow form submission.
-}
+};
+
+/* --------------------------------------------------------------------- */
 
 class BaseBook implements Book {
   constructor(
@@ -148,6 +156,8 @@ class BaseBook implements Book {
   }
 }
 
+/* --------------------------------------------------------------------- */
+
 class EBook extends BaseBook {
   constructor(
     public title: string,
@@ -169,6 +179,8 @@ class EBook extends BaseBook {
     }
   }
 }
+
+/* --------------------------------------------------------------------- */
 
 class PrintedBook extends BaseBook {
   constructor(
@@ -192,7 +204,11 @@ class PrintedBook extends BaseBook {
   }
 }
 
+/* --------------------------------------------------------------------- */
+
 let books: BaseBook[] = [];
+
+/* --------------------------------------------------------------------- */
 
 const addBook = <T>(book: T): void => {
   if (book instanceof BaseBook) {
@@ -205,14 +221,14 @@ const addBook = <T>(book: T): void => {
   }
 };
 
-function createBookTableRow(
-  book: BaseBook,
-  index: number
-): HTMLTableRowElement {
+/* --------------------------------------------------------------------- */
+
+const createBookTableRow = <B, I>(book: B, index: I): HTMLTableRowElement => {
   const row: HTMLTableRowElement = document.createElement("tr");
-  row.className =
-    "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-  row.innerHTML = `
+  if (book instanceof BaseBook) {
+    row.className =
+      "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+    row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -266,8 +282,13 @@ function createBookTableRow(
         .toFixed(2)}
       </td>
      `;
+  } else {
+    console.error("Invalid book type. Expected a BaseBook instance.");
+  }
   return row;
-}
+};
+
+/* --------------------------------------------------------------------- */
 
 const displayBook = <T>(books: T[]): void => {
   const tableBody: HTMLTableElement = document.querySelector(
@@ -276,12 +297,14 @@ const displayBook = <T>(books: T[]): void => {
   tableBody.innerHTML = "";
   books.forEach((book, index): void => {
     if (book instanceof BaseBook) {
-      tableBody.appendChild(createBookTableRow(book, index));
+      tableBody.appendChild(createBookTableRow<BaseBook, number>(book, index));
     } else {
       console.error(`Invalid book detected at index ${index}`);
     }
   });
 };
+
+/* --------------------------------------------------------------------- */
 
 /*
   BaseBook is a type that has a set of properties, like title, author, year, etc.
@@ -315,26 +338,35 @@ const updateBook = (isbn: number, updatedData: Partial<BaseBook>): void => {
   }
 };
 
-function setFieldWithCurrentValues(book: BaseBook) {
-  (document.getElementById("bookTitle") as HTMLInputElement).value = book.title;
+/* --------------------------------------------------------------------- */
 
-  (document.getElementById("bookAuthor") as HTMLInputElement).value =
-    book.author.name;
+const setFieldWithCurrentValues = <B>(book: B): void => {
+  if (book instanceof BaseBook) {
+    (document.getElementById("bookTitle") as HTMLInputElement).value =
+      book.title;
 
-  (document.getElementById("bookIsbn") as HTMLInputElement).value =
-    book.isbn.toString();
+    (document.getElementById("bookAuthor") as HTMLInputElement).value =
+      book.author.name;
 
-  (document.getElementById("bookType") as HTMLSelectElement).value =
-    book.category.name.toLowerCase();
+    (document.getElementById("bookIsbn") as HTMLInputElement).value =
+      book.isbn.toString();
 
-  (document.getElementById("bookPubDate") as HTMLInputElement).value =
-    book.year.toString();
+    (document.getElementById("bookType") as HTMLSelectElement).value =
+      book.category.name.toLowerCase();
 
-  (document.getElementById("bookPrice") as HTMLInputElement).value =
-    book.price.toString();
-}
+    (document.getElementById("bookPubDate") as HTMLInputElement).value =
+      book.year.toString();
 
-function setFieldWithUpdateValues() {
+    (document.getElementById("bookPrice") as HTMLInputElement).value =
+      book.price.toString();
+  } else {
+    console.error("Invalid book type. Expected a BaseBook instance.");
+  }
+};
+
+/* --------------------------------------------------------------------- */
+
+const setFieldWithUpdateValues = (): object => {
   return {
     title: (document.getElementById("bookTitle") as HTMLInputElement).value,
 
@@ -361,13 +393,15 @@ function setFieldWithUpdateValues() {
       <string>(document.getElementById("bookPubDate") as HTMLInputElement).value
     ),
   };
-}
+};
+
+/* --------------------------------------------------------------------- */
 
 const editBook = (isbn: number): void => {
   const book: BaseBook | undefined = books.find((book) => book.isbn === isbn);
 
   if (book) {
-    setFieldWithCurrentValues(book);
+    setFieldWithCurrentValues<BaseBook>(book);
     document.addEventListener("DOMContentLoaded", (): void => {
       const form: HTMLFormElement = document.getElementById(
         "bookForm"
@@ -384,6 +418,8 @@ const editBook = (isbn: number): void => {
   }
 };
 
+/* --------------------------------------------------------------------- */
+
 const deleteBook = (isbn: number): void => {
   const removeBookIndex: number = books.findIndex((book) => book.isbn === isbn);
   if (removeBookIndex !== -1) {
@@ -393,6 +429,8 @@ const deleteBook = (isbn: number): void => {
     console.log(`Book with ISBN ${isbn} not found`);
   }
 };
+
+/* --------------------------------------------------------------------- */
 
 const fetchBooksFromApi = async (): Promise<void> => {
   try {
@@ -420,6 +458,8 @@ const fetchBooksFromApi = async (): Promise<void> => {
   }
 };
 
+/* --------------------------------------------------------------------- */
+
 const inputGenre: HTMLSelectElement = document.getElementById(
   "searchGenre"
 ) as HTMLSelectElement;
@@ -439,6 +479,8 @@ inputGenre.addEventListener("input", async (): Promise<void> => {
     console.error("Error filtering books by genre:", error);
   }
 });
+
+/* --------------------------------------------------------------------- */
 
 const filterBooksByGenre = <T>(category: T): Promise<BaseBook[]> => {
   if (typeof category === "string") {
@@ -461,6 +503,8 @@ const filterBooksByGenre = <T>(category: T): Promise<BaseBook[]> => {
   }
 };
 
+/* --------------------------------------------------------------------- */
+
 const sortBooks = <T>(sortBy: T): void => {
   books.sort((a, b): number => {
     const ageA: number = a.age.y * 365 + a.age.m * 30 + a.age.d;
@@ -470,6 +514,8 @@ const sortBooks = <T>(sortBy: T): void => {
   displayBook<BaseBook>(books);
 };
 
+/* --------------------------------------------------------------------- */
+
 const handleSortChange = (value: string): void => {
   if (value === "ascending") {
     sortBooks<boolean>(true);
@@ -478,6 +524,8 @@ const handleSortChange = (value: string): void => {
   }
 };
 
-function infoBook(bookIndex: number): void {
+/* --------------------------------------------------------------------- */
+
+const infoBook = (bookIndex: number): void => {
   window.location.href = `detail-book.html?index=${bookIndex}`;
-}
+};
