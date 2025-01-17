@@ -10,51 +10,81 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 /* --------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("bookForm");
-    form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const title = document.getElementById("bookTitle").value;
-        const author = {
-            name: document.getElementById("bookAuthor").value,
-        };
-        const isbn = parseInt(document.getElementById("bookIsbn").value, 10);
-        if (!validateFormData(title, author, isbn))
-            return;
-        const category = {
-            name: document.getElementById("bookType").value,
-        };
-        const year = document.getElementById("bookPubDate").value;
-        const price = parseFloat(document.getElementById("bookPrice").value);
-        const age = BaseBook.findBookAge(year);
-        addBook(new BaseBook(title, author, isbn, category, year, age, price, "", 0));
-        form.reset();
-    });
-    fetchBooksFromApi();
+    const formProcessor = new FormProcessor("bookForm");
+    formProcessor.startExecution();
 });
 /* --------------------------------------------------------------------- */
-const validateFormData = (title, author, isbn) => {
-    if (typeof title === "string" &&
-        typeof author === "object" &&
-        typeof isbn === "number") {
+class FormDataFetcher {
+    constructor(form) {
+        this.form = form;
+    }
+    fetchFormData() {
+        var _a, _b, _c, _d, _e, _f;
+        const title = ((_a = this.form.querySelector("#bookTitle")) === null || _a === void 0 ? void 0 : _a.value) || "";
+        const authorName = ((_b = this.form.querySelector("#bookAuthor")) === null || _b === void 0 ? void 0 : _b.value) || "";
+        const isbn = parseInt(((_c = this.form.querySelector("#bookIsbn")) === null || _c === void 0 ? void 0 : _c.value) || "0", 10);
+        const categoryName = ((_d = this.form.querySelector("#bookType")) === null || _d === void 0 ? void 0 : _d.value) || "";
+        const year = ((_e = this.form.querySelector("#bookPubDate")) === null || _e === void 0 ? void 0 : _e.value) ||
+            "";
+        const price = parseFloat(((_f = this.form.querySelector("#bookPrice")) === null || _f === void 0 ? void 0 : _f.value) || "0");
+        return {
+            title,
+            author: { name: authorName },
+            isbn,
+            category: { name: categoryName },
+            year,
+            price,
+        };
+    }
+}
+/* --------------------------------------------------------------------- */
+class BookFactory {
+    createBook(formData) {
+        const age = new BookAgeCalculator().findBookAge(formData.year || "0");
+        return new BaseBook(formData.title || "", formData.author || { name: "" }, formData.isbn || 0, formData.category || { name: "" }, formData.year || "", age, formData.price || 0);
+    }
+}
+/* --------------------------------------------------------------------- */
+class FormProcessor {
+    constructor(formId) {
+        this.formId = formId;
+    }
+    startExecution() {
+        const form = document.getElementById(this.formId);
+        if (!form) {
+            console.error(`Form with ID ${this.formId} not found.`);
+            return;
+        }
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const formData = new FormDataFetcher(form).fetchFormData();
+            if (!new DataValidater().validateFormData(formData.title || "", formData.author, formData.isbn))
+                return;
+            const book = new BookFactory().createBook(formData);
+            addBook(book);
+            form.reset();
+        });
+        fetchBooksFromApi();
+    }
+}
+/* --------------------------------------------------------------------- */
+class DataValidater {
+    validateFormData(title, author, isbn) {
         if (!title) {
-            alert("Title fields must be requried");
-            return false; // Something is wrong prevent form submission.
+            console.log("Validation Error: Title is missing.");
+            return false; // Validation failed
         }
         if (!author) {
-            alert("Author fields must be requried");
-            return false; // Something is wrong prevent form submission.
+            console.log("Validation Error: Author is missing.");
+            return false; // Validation failed
         }
-        if (isNaN(isbn)) {
-            alert("ISBN must be a number");
-            return false; // Something is wrong prevent form submission.
+        if (isbn === undefined || isNaN(isbn)) {
+            console.log("Validation Error: ISBN is not a valid number.");
+            return false; // Validation failed
         }
+        return true; // Validation passed
     }
-    else {
-        console.log("Invalid form data. Please check your inputs.");
-        return false;
-    }
-    return true; // All fields are correct allow form submission.
-};
+}
 /* --------------------------------------------------------------------- */
 class BaseBook {
     constructor(title, author, isbn, category, year, age, price, size, pages) {
@@ -71,93 +101,55 @@ class BaseBook {
     getBookAge() {
         return `${this.age.y} years, ${this.age.m} months, ${this.age.d} days`;
     }
-    static findBookAge(year) {
+}
+/* --------------------------------------------------------------------- */
+class BookAgeCalculator {
+    findBookAge(year) {
         const currDate = new Date();
-        if (typeof year === "string") {
-            // Handle the case where year is a string
-            const bookDate = new Date(year);
-            let diffYear = currDate.getFullYear() - bookDate.getFullYear();
-            let diffMonth = currDate.getMonth() - bookDate.getMonth();
-            let diffDay = currDate.getDate() - bookDate.getDate();
-            if (diffDay < 0) {
-                diffMonth -= 1;
-                diffDay += new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate();
-            }
-            if (diffMonth < 0) {
-                diffYear -= 1;
-                diffMonth += 12;
-            }
-            if (diffMonth >= 12) {
-                diffYear += Math.floor(diffMonth / 12);
-                diffMonth %= 12;
-            }
-            return { y: diffYear, m: diffMonth, d: diffDay };
+        const bookDate = new Date(year);
+        let diffYear = currDate.getFullYear() - bookDate.getFullYear();
+        let diffMonth = currDate.getMonth() - bookDate.getMonth();
+        let diffDay = currDate.getDate() - bookDate.getDate();
+        if (diffDay < 0) {
+            diffMonth -= 1;
+            diffDay += new Date(currDate.getFullYear(), currDate.getMonth(), 0).getDate();
         }
-        else {
-            console.log(`Year ${year} is not a string`);
+        if (diffMonth < 0) {
+            diffYear -= 1;
+            diffMonth += 12;
         }
-        return { y: 0, m: 0, d: 0 };
+        if (diffMonth >= 12) {
+            diffYear += Math.floor(diffMonth / 12);
+            diffMonth %= 12;
+        }
+        return { y: diffYear, m: diffMonth, d: diffDay };
     }
 }
 /* --------------------------------------------------------------------- */
-class EBook extends BaseBook {
-    constructor(title, author, isbn, category, year, age) {
-        super(title, author, isbn, category, year, age, 0, "", 0);
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.category = category;
-        this.year = year;
-        this.age = age;
-    }
+class EBookDiscount {
     calculateDiscountPrice(originalPrice) {
-        if (typeof originalPrice === "number")
-            return (originalPrice * 0.8); // 20% discount for Ebooks
-        else {
-            console.log(`originalPrice ${originalPrice} is not a number`);
-            return 0;
-        }
+        return originalPrice * 0.2;
     }
 }
 /* --------------------------------------------------------------------- */
-class PrintedBook extends BaseBook {
-    constructor(title, author, isbn, category, year, age) {
-        super(title, author, isbn, category, year, age, 0, "", 0);
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.category = category;
-        this.year = year;
-        this.age = age;
-    }
+class PrintedBookDiscount {
     calculateDiscountPrice(originalPrice) {
-        if (typeof originalPrice === "number")
-            return (originalPrice * 0.9); // 10% discount for printed books
-        else {
-            console.log(`originalPrice ${originalPrice} is not a number`);
-            return 0;
-        }
+        return originalPrice * 0.1;
     }
 }
 /* --------------------------------------------------------------------- */
 let books = [];
 /* --------------------------------------------------------------------- */
 const addBook = (book) => {
-    if (book instanceof BaseBook) {
-        books.push(book);
-        displayBook(books);
-    }
-    else {
-        console.error("Invalid book type. Only BaseBook or its subclasses are allowed.");
-    }
+    books.push(book);
+    displayBook(books);
 };
 /* --------------------------------------------------------------------- */
 const createBookTableRow = (book, index) => {
     const row = document.createElement("tr");
-    if (book instanceof BaseBook) {
-        row.className =
-            "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
-        row.innerHTML = `
+    row.className =
+        "bg-white hover:bg-gray-100 border-b border-gray-200 text-sm text-gray-700";
+    row.innerHTML = `
       <td class="py-2 px-4">${book.title}</td>
       <td class="py-2 px-4">${book.author.name}</td>
       <td class="py-2 px-4">${book.isbn}</td>
@@ -187,20 +179,16 @@ const createBookTableRow = (book, index) => {
       </td>
       <td class="text-center">${book.price}</td>
       <td class="text-center">
-      ${new EBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-            .calculateDiscountPrice(Number(book.price))
-            .toFixed(2)}
+      ${new EBookDiscount()
+        .calculateDiscountPrice(Number(book.price))
+        .toFixed(2)}
       </td>
       <td class="text-center">
-      ${new PrintedBook(book.title, book.author, book.isbn, book.category, book.year, BaseBook.findBookAge(JSON.stringify(book.age)))
-            .calculateDiscountPrice(Number(book.price))
-            .toFixed(2)}
+      ${new PrintedBookDiscount()
+        .calculateDiscountPrice(Number(book.price))
+        .toFixed(2)}
       </td>
      `;
-    }
-    else {
-        console.error("Invalid book type. Expected a BaseBook instance.");
-    }
     return row;
 };
 /* --------------------------------------------------------------------- */
@@ -208,12 +196,7 @@ const displayBook = (books) => {
     const tableBody = document.querySelector("#bookTable tbody");
     tableBody.innerHTML = "";
     books.forEach((book, index) => {
-        if (book instanceof BaseBook) {
-            tableBody.appendChild(createBookTableRow(book, index));
-        }
-        else {
-            console.error(`Invalid book detected at index ${index}`);
-        }
+        tableBody.appendChild(createBookTableRow(book, index));
     });
 };
 /* --------------------------------------------------------------------- */
@@ -241,23 +224,17 @@ const updateBook = (isbn, updatedData) => {
 };
 /* --------------------------------------------------------------------- */
 const setFieldWithCurrentValues = (book) => {
-    if (book instanceof BaseBook) {
-        document.getElementById("bookTitle").value =
-            book.title;
-        document.getElementById("bookAuthor").value =
-            book.author.name;
-        document.getElementById("bookIsbn").value =
-            book.isbn.toString();
-        document.getElementById("bookType").value =
-            book.category.name.toLowerCase();
-        document.getElementById("bookPubDate").value =
-            book.year.toString();
-        document.getElementById("bookPrice").value =
-            book.price.toString();
-    }
-    else {
-        console.error("Invalid book type. Expected a BaseBook instance.");
-    }
+    document.getElementById("bookTitle").value = book.title;
+    document.getElementById("bookAuthor").value =
+        book.author.name;
+    document.getElementById("bookIsbn").value =
+        book.isbn.toString();
+    document.getElementById("bookType").value =
+        book.category.name.toLowerCase();
+    document.getElementById("bookPubDate").value =
+        book.year.toString();
+    document.getElementById("bookPrice").value =
+        book.price.toString();
 };
 /* --------------------------------------------------------------------- */
 const setFieldWithUpdateValues = () => {
@@ -272,7 +249,7 @@ const setFieldWithUpdateValues = () => {
             name: document.getElementById("bookType").value,
         },
         price: parseFloat(document.getElementById("bookPrice").value),
-        age: BaseBook.findBookAge(document.getElementById("bookPubDate").value),
+        age: new BookAgeCalculator().findBookAge(document.getElementById("bookPubDate").value),
     };
 };
 /* --------------------------------------------------------------------- */
@@ -339,22 +316,17 @@ inputGenre.addEventListener("input", () => __awaiter(void 0, void 0, void 0, fun
 }));
 /* --------------------------------------------------------------------- */
 const filterBooksByGenre = (category) => {
-    if (typeof category === "string") {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                try {
-                    const filteredBooks = books.filter((book) => book.category.name.toLowerCase() === category);
-                    resolve(filteredBooks);
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            try {
+                const filteredBooks = books.filter((book) => book.category.name.toLowerCase() === category);
+                resolve(filteredBooks);
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    else {
-        return Promise.reject(new Error(`Category type ${typeof category} is not a string`));
-    }
+    });
 };
 /* --------------------------------------------------------------------- */
 const sortBooks = (sortBy) => {
@@ -378,3 +350,4 @@ const handleSortChange = (value) => {
 const infoBook = (bookIndex) => {
     window.location.href = `detail-book.html?index=${bookIndex}`;
 };
+/* --------------------------------------------------------------------- */ 

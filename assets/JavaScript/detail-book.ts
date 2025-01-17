@@ -7,6 +7,8 @@ const getQueryParameter = <T>(bookIndex: T): T | null => {
   }
 }
 
+/* --------------------------------------------------------------------- */
+
 const bookIndex: string | null = getQueryParameter<string>("index");
 
 if (bookIndex !== null) {

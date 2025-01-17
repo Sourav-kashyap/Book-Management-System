@@ -8,6 +8,7 @@ const getQueryParameter = (bookIndex) => {
         return null;
     }
 };
+/* --------------------------------------------------------------------- */
 const bookIndex = getQueryParameter("index");
 if (bookIndex !== null) {
     fetch("../../dummyBooksDetails.json")
